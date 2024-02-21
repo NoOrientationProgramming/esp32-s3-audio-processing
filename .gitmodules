@@ -1,3 +1,6 @@
 [submodule "components/ProcessingCore"]
 	path = components/ProcessingCore
 	url = https://github.com/NoOrientationProgramming/ProcessingCore.git
+[submodule "components/ProcessingCommon"]
+	path = components/ProcessingCommon
+	url = https://github.com/NoOrientationProgramming/ProcessingCommon.git
