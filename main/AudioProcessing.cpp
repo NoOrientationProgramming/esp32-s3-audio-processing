@@ -23,7 +23,12 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <freertos/FreeRTOS.h>
+#include <freertos/task.h>
+
 #include "AudioProcessing.h"
+#include "EspWifiConnecting.h"
+#include "LibTime.h"
 
 #define dForEach_ProcState(gen) \
 		gen(StStart) \
@@ -45,6 +50,11 @@ using namespace std;
 AudioProcessing::AudioProcessing()
 	: Processing("AudioProcessing")
 	, mStartMs(0)
+	, mDiffLoopMs(0)
+	, mLastTimeLoopMs(0)
+	, mpLed(NULL)
+	, mpPool(NULL)
+	, mOkWifiOld(false)
 {
 	mState = StStart;
 }
@@ -53,18 +63,59 @@ AudioProcessing::AudioProcessing()
 
 Success AudioProcessing::process()
 {
-	//uint32_t curTimeMs = millis();
+	uint32_t curTimeMs = millis();
 	//uint32_t diffMs = curTimeMs - mStartMs;
 	//Success success;
+	TaskHandle_t pTask;
+	UBaseType_t prio;
 #if 0
 	dStateTrace;
 #endif
+	mDiffLoopMs = curTimeMs - mLastTimeLoopMs;
+	mLastTimeLoopMs = curTimeMs;
+
 	switch (mState)
 	{
 	case StStart:
 
+		procInfLog("Starting main process");
+
+		pTask = xTaskGetCurrentTaskHandle();
+		prio = uxTaskPriorityGet(pTask);
+
+		procDbgLog(LOG_LVL, "Priority of main process is %u", prio);
+
+		mpLed = EspLedPulsing::create();
+		if (!mpLed)
+			return procErrLog(-1, "could not create process");
+
+		mpLed->pinSet(GPIO_NUM_2);
+		mpLed->paramSet(50, 200, 1, 800);
+
+		mpLed->procTreeDisplaySet(false);
+		start(mpLed);
+
+		mpPool = ThreadPooling::create();
+		if (!mpPool)
+		{
+			procErrLog(-1, "could not create process");
+
+			mState = StMain;
+			break;
+		}
+
+		mpPool->workerCntSet(2);
+		mpPool->driverCreateFctSet(poolDriverCreate);
+
+		mpPool->procTreeDisplaySet(false);
+		start(mpPool);
+
+		mState = StMain;
+
 		break;
 	case StMain:
+
+		wifiCheck();
 
 		break;
 	case StTmp:
@@ -77,12 +128,56 @@ Success AudioProcessing::process()
 	return Pending;
 }
 
+void AudioProcessing::wifiCheck()
+{
+	bool ok = EspWifiConnecting::ok();
+
+	if (ok == mOkWifiOld)
+		return;
+	mOkWifiOld = ok;
+
+	if (ok)
+		mpLed->paramSet(50, 200, 1, 800);
+	else
+		mpLed->paramSet(50, 200, 2, 600);
+}
+
 void AudioProcessing::processInfo(char *pBuf, char *pBufEnd)
 {
 #if 1
 	dInfo("State\t\t\t%s\n", ProcStateString[mState]);
 #endif
+	dInfo("Loop duration\t\t%lums\n", mDiffLoopMs);
 }
 
 /* static functions */
+
+/*
+ * Literature
+ * - https://docs.espressif.com/projects/esp-idf/en/v4.3/esp32/api-reference/system/freertos.html
+ */
+void AudioProcessing::poolDriverCreate(Processing *pDrv, uint16_t idDrv)
+{
+	xTaskCreatePinnedToCore(
+		cpuBoundDrive,					// function
+		!idDrv ? "Primary" : "Secondary",	// name
+		4096,		// stack
+		pDrv,		// parameter
+		1,			// priority
+		NULL,		// handle
+		idDrv);		// core ID
+}
+
+void AudioProcessing::cpuBoundDrive(void *arg)
+{
+	Processing *pDrv = (Processing *)arg;
+
+	dbgLog(LOG_LVL, "entered CPU bound process for driver %p", pDrv);
+
+	while (1)
+	{
+		pDrv->treeTick();
+		this_thread::sleep_for(chrono::milliseconds(2));
+	}
+}
 
