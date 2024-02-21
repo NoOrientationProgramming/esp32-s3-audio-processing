@@ -82,6 +82,15 @@ Success AppSupervising::process()
 		break;
 	case StWifiStart:
 
+		mpLed = EspLedPulsing::create();
+		if (!mpLed)
+			return procErrLog(-1, "could not create process");
+
+		mpLed->pinSet(GPIO_NUM_2);
+		mpLed->paramSet(500, 1000);
+
+		start(mpLed);
+
 		mpWifi = EspWifiConnecting::create();
 		if (!mpWifi)
 			return procErrLog(-1, "could not create process");
@@ -92,15 +101,6 @@ Success AppSupervising::process()
 		start(mpWifi);
 
 		procInfLog("waiting for wifi");
-
-		mpLed = EspLedPulsing::create();
-		if (!mpLed)
-			return procErrLog(-1, "could not create process");
-
-		mpLed->pinSet(GPIO_NUM_2);
-		mpLed->paramSet(500, 1000);
-
-		start(mpLed);
 
 		mState = StWifiConnectedWait;
 
