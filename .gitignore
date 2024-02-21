@@ -1,0 +1,11 @@
+
+build/
+ignore/
+literature/
+
+dependencies.lock
+*.old
+
+*Int.h
+*.diff
+
