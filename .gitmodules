@@ -1,0 +1,3 @@
+[submodule "components/ProcessingCore"]
+	path = components/ProcessingCore
+	url = https://github.com/NoOrientationProgramming/ProcessingCore.git
