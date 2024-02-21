@@ -23,57 +23,66 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef APP_SUPERVISING_H
-#define APP_SUPERVISING_H
+#include "AudioProcessing.h"
 
-#include "Processing.h"
-#include "EspWifiConnecting.h"
-#include "EspLedPulsing.h"
+#define dForEach_ProcState(gen) \
+		gen(StStart) \
+		gen(StMain) \
+		gen(StTmp) \
 
-class AppSupervising : public Processing
+#define dGenProcStateEnum(s) s,
+dProcessStateEnum(ProcState);
+
+#if 1
+#define dGenProcStateString(s) #s,
+dProcessStateStr(ProcState);
+#endif
+
+using namespace std;
+
+#define LOG_LVL	0
+
+AudioProcessing::AudioProcessing()
+	: Processing("AudioProcessing")
+	, mStartMs(0)
 {
+	mState = StStart;
+}
 
-public:
+/* member functions */
 
-	static AppSupervising *create()
+Success AudioProcessing::process()
+{
+	//uint32_t curTimeMs = millis();
+	//uint32_t diffMs = curTimeMs - mStartMs;
+	//Success success;
+#if 0
+	dStateTrace;
+#endif
+	switch (mState)
 	{
-		return new (std::nothrow) AppSupervising;
+	case StStart:
+
+		break;
+	case StMain:
+
+		break;
+	case StTmp:
+
+		break;
+	default:
+		break;
 	}
 
-protected:
+	return Pending;
+}
 
-	AppSupervising();
-	virtual ~AppSupervising() {}
-
-private:
-
-	AppSupervising(const AppSupervising &) : Processing("") {}
-	AppSupervising &operator=(const AppSupervising &) { return *this; }
-
-	/*
-	 * Naming of functions:  objectVerb()
-	 * Example:              peerAdd()
-	 */
-
-	/* member functions */
-	Success process();
-	void processInfo(char *pBuf, char *pBufEnd);
-
-	void dbgStart();
-	void appStart();
-
-	/* member variables */
-	uint32_t mStartMs;
-	EspWifiConnecting *mpWifi;
-	EspLedPulsing *mpLed;
-
-	/* static functions */
-
-	/* static variables */
-
-	/* constants */
-
-};
-
+void AudioProcessing::processInfo(char *pBuf, char *pBufEnd)
+{
+#if 1
+	dInfo("State\t\t\t%s\n", ProcStateString[mState]);
 #endif
+}
+
+/* static functions */
 

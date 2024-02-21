@@ -23,32 +23,30 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef APP_SUPERVISING_H
-#define APP_SUPERVISING_H
+#ifndef AUDIO_PROCESSING_H
+#define AUDIO_PROCESSING_H
 
 #include "Processing.h"
-#include "EspWifiConnecting.h"
-#include "EspLedPulsing.h"
 
-class AppSupervising : public Processing
+class AudioProcessing : public Processing
 {
 
 public:
 
-	static AppSupervising *create()
+	static AudioProcessing *create()
 	{
-		return new (std::nothrow) AppSupervising;
+		return new (std::nothrow) AudioProcessing;
 	}
 
 protected:
 
-	AppSupervising();
-	virtual ~AppSupervising() {}
+	AudioProcessing();
+	virtual ~AudioProcessing() {}
 
 private:
 
-	AppSupervising(const AppSupervising &) : Processing("") {}
-	AppSupervising &operator=(const AppSupervising &) { return *this; }
+	AudioProcessing(const AudioProcessing &) : Processing("") {}
+	AudioProcessing &operator=(const AudioProcessing &) { return *this; }
 
 	/*
 	 * Naming of functions:  objectVerb()
@@ -59,13 +57,8 @@ private:
 	Success process();
 	void processInfo(char *pBuf, char *pBufEnd);
 
-	void dbgStart();
-	void appStart();
-
 	/* member variables */
 	uint32_t mStartMs;
-	EspWifiConnecting *mpWifi;
-	EspLedPulsing *mpLed;
 
 	/* static functions */
 

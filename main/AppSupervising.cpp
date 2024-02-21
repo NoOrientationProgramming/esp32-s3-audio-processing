@@ -24,9 +24,21 @@
 */
 
 #include "AppSupervising.h"
+#include "SystemDebugging.h"
+#include "AudioProcessing.h"
+
+#include "WifiConnectingInt.h" // <-- Delete this line
+
+#ifndef CONFIG_INT_ESP_WIFI_SSID
+#define CONFIG_INT_ESP_WIFI_SSID		"ssid"
+#define CONFIG_INT_ESP_WIFI_PASSWORD	"password"
+#endif
 
 #define dForEach_ProcState(gen) \
 		gen(StStart) \
+		gen(StWifiStart) \
+		gen(StWifiConnectedWait) \
+		gen(StMainStart) \
 		gen(StMain) \
 		gen(StTmp) \
 
@@ -45,6 +57,8 @@ using namespace std;
 AppSupervising::AppSupervising()
 	: Processing("AppSupervising")
 	, mStartMs(0)
+	, mpWifi(NULL)
+	, mpLed(NULL)
 {
 	mState = StStart;
 }
@@ -63,6 +77,54 @@ Success AppSupervising::process()
 	{
 	case StStart:
 
+		mState = StWifiStart;
+
+		break;
+	case StWifiStart:
+
+		mpWifi = EspWifiConnecting::create();
+		if (!mpWifi)
+			return procErrLog(-1, "could not create process");
+
+		mpWifi->ssidSet(CONFIG_INT_ESP_WIFI_SSID);
+		mpWifi->passwordSet(CONFIG_INT_ESP_WIFI_PASSWORD);
+
+		start(mpWifi);
+
+		procInfLog("waiting for wifi");
+
+		mpLed = EspLedPulsing::create();
+		if (!mpLed)
+			return procErrLog(-1, "could not create process");
+
+		mpLed->pinSet(GPIO_NUM_2);
+		mpLed->paramSet(500, 1000);
+
+		start(mpLed);
+
+		mState = StWifiConnectedWait;
+
+		break;
+	case StWifiConnectedWait:
+
+		if (!EspWifiConnecting::ok())
+			break;
+
+		repel(mpLed);
+		mpLed = NULL;
+
+		procInfLog("wifi connected");
+
+		mState = StMainStart;
+
+		break;
+	case StMainStart:
+
+		dbgStart();
+		appStart();
+
+		mState = StMain;
+
 		break;
 	case StMain:
 
@@ -75,6 +137,37 @@ Success AppSupervising::process()
 	}
 
 	return Pending;
+}
+
+void AppSupervising::dbgStart()
+{
+	SystemDebugging *pDbg;
+
+	pDbg = SystemDebugging::create(this);
+	if (!pDbg)
+	{
+		procErrLog(-1, "could not create process");
+		return;
+	}
+
+	pDbg->procTreeDisplaySet(false);
+	SystemDebugging::levelLogSet(3);
+
+	start(pDbg);
+}
+
+void AppSupervising::appStart()
+{
+	Processing *pProc;
+
+	pProc = AudioProcessing::create();
+	if (!pProc)
+	{
+		procErrLog(-1, "could not create process");
+		return;
+	}
+
+	start(pProc);
 }
 
 void AppSupervising::processInfo(char *pBuf, char *pBufEnd)
