@@ -72,6 +72,8 @@ private:
 	/* static functions */
 	static void poolDriverCreate(Processing *pDrv, uint16_t idDrv);
 	static void cpuBoundDrive(void *arg);
+	static void cmdDummyCalc(char *pArgs, char *pBuf, char *pBufEnd);
+	static void cmdSimdCalc(char *pArgs, char *pBuf, char *pBufEnd);
 
 	/* static variables */
 

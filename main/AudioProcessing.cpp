@@ -28,6 +28,7 @@
 
 #include "AudioProcessing.h"
 #include "EspWifiConnecting.h"
+#include "SystemCommanding.h"
 #include "LibTime.h"
 
 #define dForEach_ProcState(gen) \
@@ -46,6 +47,9 @@ dProcessStateStr(ProcState);
 using namespace std;
 
 #define LOG_LVL	0
+
+extern "C" void *dummyCalc(void *pA, int b);
+extern "C" void simdCalc(void *pA, size_t sz);
 
 AudioProcessing::AudioProcessing()
 	: Processing("AudioProcessing")
@@ -94,6 +98,18 @@ Success AudioProcessing::process()
 
 		mpLed->procTreeDisplaySet(false);
 		start(mpLed);
+
+		cmdReg(
+			"calc",
+			&AudioProcessing::cmdDummyCalc,
+			"Assembler Instructions", "",
+			"Make dummy calculation");
+
+		cmdReg(
+			"simd",
+			&AudioProcessing::cmdSimdCalc,
+			"Assembler Instructions", "",
+			"Make SIMD calculation");
 
 		mpPool = ThreadPooling::create();
 		if (!mpPool)
@@ -179,5 +195,45 @@ void AudioProcessing::cpuBoundDrive(void *arg)
 		pDrv->treeTick();
 		this_thread::sleep_for(chrono::milliseconds(2));
 	}
+}
+
+void AudioProcessing::cmdDummyCalc(char *pArgs, char *pBuf, char *pBufEnd)
+{
+	int offset = 0;
+	void *pBase = &offset;
+	void *pRes;
+
+	if (*pArgs)
+		offset = strtol(pArgs, NULL, 10);
+
+	pRes = dummyCalc(pBase, offset);
+
+	dInfo("Base %p, Offset %d, Result %p\n", pBase, offset, pRes);
+}
+
+void AudioProcessing::cmdSimdCalc(char *pArgs, char *pBuf, char *pBufEnd)
+{
+	char data[27];
+	char *pBase, *pData, *pEnd;
+	size_t i;
+
+	pBase = data + 1;
+	pEnd = pBase + sizeof(data);
+
+	dInfo("Base %p\n", pBase);
+
+	i = 0;
+	for (pData = pBase; pData < pEnd; ++pData, ++i)
+		*pData = i + 1;
+
+	i = 0;
+	for (pData = pBase; pData < pEnd; ++pData, ++i)
+		dInfo("%2zu = %2d\n", i, (int)*pData);
+
+	simdCalc(pData, pEnd - pBase);
+
+	i = 0;
+	for (pData = pBase; pData < pEnd; ++pData, ++i)
+		dInfo("%2zu = %2d\n", i, (int)*pData);
 }
 
