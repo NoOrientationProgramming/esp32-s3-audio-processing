@@ -107,7 +107,7 @@ Success AudioProcessing::process()
 
 		cmdReg(
 			"simd",
-			&AudioProcessing::cmdSimdCalc,
+			BIND_MEMBER_FN(cmdSimdCalc),
 			"", "Make SIMD calculation",
 			"Assembler Instructions");
 
@@ -156,6 +156,32 @@ void AudioProcessing::wifiCheck()
 		mpLed->paramSet(50, 200, 1, 800);
 	else
 		mpLed->paramSet(50, 200, 2, 600);
+}
+
+void AudioProcessing::cmdSimdCalc(char *pArgs, char *pBuf, char *pBufEnd)
+{
+	char data[27];
+	char *pBase, *pData, *pEnd;
+	size_t i;
+
+	pBase = data + 1;
+	pEnd = pBase + sizeof(data);
+
+	dInfo("Base %p\n", pBase);
+
+	i = 0;
+	for (pData = pBase; pData < pEnd; ++pData, ++i)
+		*pData = i + 1;
+
+	i = 0;
+	for (pData = pBase; pData < pEnd; ++pData, ++i)
+		dInfo("%2zu = %2d\n", i, (int)*pData);
+
+	simdCalc(pData, pEnd - pBase);
+
+	i = 0;
+	for (pData = pBase; pData < pEnd; ++pData, ++i)
+		dInfo("%2zu = %2d\n", i, (int)*pData);
 }
 
 void AudioProcessing::processInfo(char *pBuf, char *pBufEnd)
@@ -209,31 +235,5 @@ void AudioProcessing::cmdDummyCalc(char *pArgs, char *pBuf, char *pBufEnd)
 	pRes = dummyCalc(pBase, offset);
 
 	dInfo("Base %p, Offset %d, Result %p\n", pBase, offset, pRes);
-}
-
-void AudioProcessing::cmdSimdCalc(char *pArgs, char *pBuf, char *pBufEnd)
-{
-	char data[27];
-	char *pBase, *pData, *pEnd;
-	size_t i;
-
-	pBase = data + 1;
-	pEnd = pBase + sizeof(data);
-
-	dInfo("Base %p\n", pBase);
-
-	i = 0;
-	for (pData = pBase; pData < pEnd; ++pData, ++i)
-		*pData = i + 1;
-
-	i = 0;
-	for (pData = pBase; pData < pEnd; ++pData, ++i)
-		dInfo("%2zu = %2d\n", i, (int)*pData);
-
-	simdCalc(pData, pEnd - pBase);
-
-	i = 0;
-	for (pData = pBase; pData < pEnd; ++pData, ++i)
-		dInfo("%2zu = %2d\n", i, (int)*pData);
 }
 

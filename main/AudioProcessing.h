@@ -60,6 +60,7 @@ private:
 	void processInfo(char *pBuf, char *pBufEnd);
 
 	void wifiCheck();
+	void cmdSimdCalc(char *pArgs, char *pBuf, char *pBufEnd);
 
 	/* member variables */
 	uint32_t mStartMs;
@@ -73,7 +74,6 @@ private:
 	static void poolDriverCreate(Processing *pDrv, uint16_t idDrv);
 	static void cpuBoundDrive(void *arg);
 	static void cmdDummyCalc(char *pArgs, char *pBuf, char *pBufEnd);
-	static void cmdSimdCalc(char *pArgs, char *pBuf, char *pBufEnd);
 
 	/* static variables */
 
