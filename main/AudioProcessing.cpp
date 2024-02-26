@@ -102,14 +102,14 @@ Success AudioProcessing::process()
 		cmdReg(
 			"calc",
 			&AudioProcessing::cmdDummyCalc,
-			"Assembler Instructions", "",
-			"Make dummy calculation");
+			"", "Make dummy calculation",
+			"Assembler Instructions");
 
 		cmdReg(
 			"simd",
 			&AudioProcessing::cmdSimdCalc,
-			"Assembler Instructions", "",
-			"Make SIMD calculation");
+			"", "Make SIMD calculation",
+			"Assembler Instructions");
 
 		mpPool = ThreadPooling::create();
 		if (!mpPool)
