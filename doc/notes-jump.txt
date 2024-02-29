@@ -1,0 +1,28 @@
+
+-------------------------
+Teststring in shell and vim
+
+--test1--tes_t2t--test3--    
+
+  _____  ___ ___  _____
+__     __   _   __     __
+
+
+-------------------------
+Jump Left
+
+ C
+01
+|
+\___ State previous
+
+
+-------------------------
+Jump Right
+
+ C
+10
+|
+\___ State previous
+
+
