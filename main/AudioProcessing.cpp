@@ -231,7 +231,7 @@ void AudioProcessing::cmdDummyCalc(char *pArgs, char *pBuf, char *pBufEnd)
 	void *pBase = &offset;
 	void *pRes;
 
-	if (*pArgs)
+	if (pArgs)
 		offset = strtol(pArgs, NULL, 10);
 
 	pRes = dummyCalc(pBase, offset);
