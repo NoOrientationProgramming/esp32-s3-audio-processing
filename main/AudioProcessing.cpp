@@ -164,6 +164,8 @@ void AudioProcessing::cmdSimdCalc(char *pArgs, char *pBuf, char *pBufEnd)
 	char *pBase, *pData, *pEnd;
 	size_t i;
 
+	(void)pArgs;
+
 	pBase = data + 1;
 	pEnd = pBase + sizeof(data);
 
