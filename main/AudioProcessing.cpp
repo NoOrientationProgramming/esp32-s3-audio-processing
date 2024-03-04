@@ -201,6 +201,10 @@ void AudioProcessing::cmdSimdCalc(char *pArgs, char *pBuf, char *pBufEnd)
 }
 #endif
 
+/*
+ * Literature
+ * - https://en.cppreference.com/w/c/types/integer#Format_macro_constants
+ */
 void AudioProcessing::processInfo(char *pBuf, char *pBufEnd)
 {
 #if 1
