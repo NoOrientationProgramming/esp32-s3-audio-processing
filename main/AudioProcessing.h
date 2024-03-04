@@ -27,8 +27,10 @@
 #define AUDIO_PROCESSING_H
 
 #include "Processing.h"
-#include "EspLedPulsing.h"
 #include "ThreadPooling.h"
+#ifdef __xtensa__
+#include "EspLedPulsing.h"
+#endif
 
 class AudioProcessing : public Processing
 {
@@ -59,22 +61,25 @@ private:
 	Success process();
 	void processInfo(char *pBuf, char *pBufEnd);
 
+#ifdef __xtensa__
 	void wifiCheck();
 	void cmdSimdCalc(char *pArgs, char *pBuf, char *pBufEnd);
-
+#endif
 	/* member variables */
 	uint32_t mStartMs;
 	uint32_t mDiffLoopMs;
 	uint32_t mLastTimeLoopMs;
-	EspLedPulsing *mpLed;
 	ThreadPooling *mpPool;
+#ifdef __xtensa__
+	EspLedPulsing *mpLed;
 	bool mOkWifiOld;
-
+#endif
 	/* static functions */
+#ifdef __xtensa__
 	static void poolDriverCreate(Processing *pDrv, uint16_t idDrv);
 	static void cpuBoundDrive(void *arg);
 	static void cmdDummyCalc(char *pArgs, char *pBuf, char *pBufEnd);
-
+#endif
 	/* static variables */
 
 	/* constants */

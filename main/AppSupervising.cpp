@@ -57,8 +57,10 @@ using namespace std;
 AppSupervising::AppSupervising()
 	: Processing("AppSupervising")
 	, mStartMs(0)
+#ifdef __xtensa__
 	, mpWifi(NULL)
 	, mpLed(NULL)
+#endif
 {
 	mState = StStart;
 }
@@ -81,7 +83,7 @@ Success AppSupervising::process()
 
 		break;
 	case StWifiStart:
-
+#ifdef __xtensa__
 		mpLed = EspLedPulsing::create();
 		if (!mpLed)
 			return procErrLog(-1, "could not create process");
@@ -103,10 +105,10 @@ Success AppSupervising::process()
 		procInfLog("waiting for wifi");
 
 		mState = StWifiConnectedWait;
-
+#endif
 		break;
 	case StWifiConnectedWait:
-
+#ifdef __xtensa__
 		if (!EspWifiConnecting::ok())
 			break;
 
@@ -114,7 +116,7 @@ Success AppSupervising::process()
 		mpLed = NULL;
 
 		procInfLog("wifi connected");
-
+#endif
 		mState = StMainStart;
 
 		break;

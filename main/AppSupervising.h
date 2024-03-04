@@ -27,8 +27,10 @@
 #define APP_SUPERVISING_H
 
 #include "Processing.h"
+#ifdef __xtensa__
 #include "EspWifiConnecting.h"
 #include "EspLedPulsing.h"
+#endif
 
 class AppSupervising : public Processing
 {
@@ -64,8 +66,10 @@ private:
 
 	/* member variables */
 	uint32_t mStartMs;
+#ifdef __xtensa__
 	EspWifiConnecting *mpWifi;
 	EspLedPulsing *mpLed;
+#endif
 
 	/* static functions */
 

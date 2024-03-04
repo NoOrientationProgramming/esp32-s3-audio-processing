@@ -23,13 +23,18 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+#ifdef __xtensa__
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
+#endif
+#include <cinttypes>
 
 #include "AudioProcessing.h"
-#include "EspWifiConnecting.h"
 #include "SystemCommanding.h"
 #include "LibTime.h"
+#ifdef __xtensa__
+#include "EspWifiConnecting.h"
+#endif
 
 #define dForEach_ProcState(gen) \
 		gen(StStart) \
@@ -48,17 +53,21 @@ using namespace std;
 
 #define LOG_LVL	0
 
+#ifdef __xtensa__
 extern "C" void *dummyCalc(void *pA, int b);
 extern "C" void simdCalc(void *pA, size_t sz);
+#endif
 
 AudioProcessing::AudioProcessing()
 	: Processing("AudioProcessing")
 	, mStartMs(0)
 	, mDiffLoopMs(0)
 	, mLastTimeLoopMs(0)
-	, mpLed(NULL)
 	, mpPool(NULL)
+#ifdef __xtensa__
+	, mpLed(NULL)
 	, mOkWifiOld(false)
+#endif
 {
 	mState = StStart;
 }
@@ -70,8 +79,10 @@ Success AudioProcessing::process()
 	uint32_t curTimeMs = millis();
 	//uint32_t diffMs = curTimeMs - mStartMs;
 	//Success success;
+#ifdef __xtensa__
 	TaskHandle_t pTask;
 	UBaseType_t prio;
+#endif
 #if 0
 	dStateTrace;
 #endif
@@ -83,7 +94,7 @@ Success AudioProcessing::process()
 	case StStart:
 
 		procInfLog("Starting main process");
-
+#ifdef __xtensa__
 		pTask = xTaskGetCurrentTaskHandle();
 		prio = uxTaskPriorityGet(pTask);
 
@@ -110,7 +121,7 @@ Success AudioProcessing::process()
 			BIND_MEMBER_FN(cmdSimdCalc),
 			"", "Make SIMD calculation",
 			"Assembler Instructions");
-
+#endif
 		mpPool = ThreadPooling::create();
 		if (!mpPool)
 		{
@@ -121,8 +132,9 @@ Success AudioProcessing::process()
 		}
 
 		mpPool->workerCntSet(2);
+#ifdef __xtensa__
 		mpPool->driverCreateFctSet(poolDriverCreate);
-
+#endif
 		mpPool->procTreeDisplaySet(false);
 		start(mpPool);
 
@@ -131,8 +143,9 @@ Success AudioProcessing::process()
 		break;
 	case StMain:
 
+#ifdef __xtensa__
 		wifiCheck();
-
+#endif
 		break;
 	case StTmp:
 
@@ -144,6 +157,7 @@ Success AudioProcessing::process()
 	return Pending;
 }
 
+#ifdef __xtensa__
 void AudioProcessing::wifiCheck()
 {
 	bool ok = EspWifiConnecting::ok();
@@ -185,17 +199,19 @@ void AudioProcessing::cmdSimdCalc(char *pArgs, char *pBuf, char *pBufEnd)
 	for (pData = pBase; pData < pEnd; ++pData, ++i)
 		dInfo("%2zu = %2d\n", i, (int)*pData);
 }
+#endif
 
 void AudioProcessing::processInfo(char *pBuf, char *pBufEnd)
 {
 #if 1
 	dInfo("State\t\t\t%s\n", ProcStateString[mState]);
 #endif
-	dInfo("Loop duration\t\t%lums\n", mDiffLoopMs);
+	dInfo("Loop duration\t\t%" PRIu32 "ms\n", mDiffLoopMs);
 }
 
 /* static functions */
 
+#ifdef __xtensa__
 /*
  * Literature
  * - https://docs.espressif.com/projects/esp-idf/en/v4.3/esp32/api-reference/system/freertos.html
@@ -238,4 +254,5 @@ void AudioProcessing::cmdDummyCalc(char *pArgs, char *pBuf, char *pBufEnd)
 
 	dInfo("Base %p, Offset %d, Result %p\n", pBase, offset, pRes);
 }
+#endif
 
