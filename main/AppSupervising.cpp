@@ -103,9 +103,9 @@ Success AppSupervising::process()
 		start(mpWifi);
 
 		procInfLog("waiting for wifi");
-
-		mState = StWifiConnectedWait;
 #endif
+		mState = StWifiConnectedWait;
+
 		break;
 	case StWifiConnectedWait:
 #ifdef __xtensa__
