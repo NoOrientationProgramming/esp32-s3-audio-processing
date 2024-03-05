@@ -20,6 +20,41 @@ if host_machine.system() == 'windows'
 	deps += cxx.find_library('ws2_32')
 endif
 
+# https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html
+warnings = [
+	'-Wall',
+	'-Wextra',
+	'-Wpedantic',
+	'-Werror',
+	'-Wfatal-errors',
+	'-Wreorder',
+	'-Wswitch-enum',
+	'-Wuseless-cast',
+	'-Wparentheses',
+	'-Wshift-overflow',
+	'-Wsign-compare',
+	'-Wzero-as-null-pointer-constant',
+	'-Wcast-align',
+	'-Wcast-qual',
+	'-Wcatch-value',
+	'-Wchar-subscripts',
+	'-Wswitch-default',
+	'-Wctor-dtor-privacy',
+	'-Wduplicated-branches',
+	'-Wduplicated-cond',
+	'-Wempty-body',
+	'-Wextra-semi',
+	'-Wfloat-equal',
+	'-Wformat',
+	'-Wformat-extra-args',
+	'-Wimplicit-fallthrough',
+	'-Wmissing-field-initializers',
+	'-Wnull-dereference',
+	'-Wshadow',
+]
+
+args += warnings
+
 myApp = executable(
 	'app',
 	[
