@@ -11,6 +11,7 @@ deps += dependency('threads')
 
 args = []
 args += '-DCONFIG_PROC_HAVE_LOG=1'
+args += '-DCONFIG_PROC_INFO_BUFFER_SIZE=1024'
 args += '-std=gnu++11'
 
 if host_machine.system() == 'windows'
