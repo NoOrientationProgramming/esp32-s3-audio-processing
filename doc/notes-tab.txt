@@ -1,0 +1,32 @@
+
+-----------------------------
+Auto complete
+
+State: ''
+Result: ''
+
+State: 'dn'
+
+Commands:
+help
+dnstest
+dnshello
+
+Result: 'dns'
+
+-----------------------------
+Command suggestion
+
+State: ''
+Result: ''
+
+State: 'dns'
+
+Commands:
+help
+dnstest
+dnshello
+
+Result:
+dnstest      dnshello
+
