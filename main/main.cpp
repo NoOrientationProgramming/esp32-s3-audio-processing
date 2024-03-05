@@ -1,8 +1,8 @@
 
 #ifndef __xtensa__
-#include <iostream>
 #include <signal.h>
 #endif
+#include <iostream>
 #include <thread>
 
 #include "AppSupervising.h"
