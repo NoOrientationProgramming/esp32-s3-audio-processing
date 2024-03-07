@@ -23,17 +23,17 @@ void applicationCloseRequested(int signum)
 extern "C" void app_main()
 {
 	levelLogSet(4);
-
+#ifndef __xtensa__
+	signal(SIGINT, applicationCloseRequested);
+	signal(SIGTERM, applicationCloseRequested);
+#endif
 	pApp = AppSupervising::create();
 	if (!pApp)
 	{
 		cerr << "could not create process" << endl;
 		return;
 	}
-#ifndef __xtensa__
-	signal(SIGINT, applicationCloseRequested);
-	signal(SIGTERM, applicationCloseRequested);
-#endif
+
 	while (1)
 	{
 		pApp->treeTick();
