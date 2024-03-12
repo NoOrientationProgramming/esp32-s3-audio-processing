@@ -60,7 +60,6 @@ private:
 	/* member functions */
 	Success process();
 	void processInfo(char *pBuf, char *pBufEnd);
-
 #ifdef __xtensa__
 	void wifiCheck();
 	void cmdSimdLdQr(char *pArgs, char *pBuf, char *pBufEnd);
