@@ -31,7 +31,7 @@
 
 #include "AudioProcessing.h"
 #include "SystemCommanding.h"
-#include "LibTime.h"
+#include "LibDspc.h"
 #ifdef __xtensa__
 #include "EspWifiConnecting.h"
 #endif
@@ -55,7 +55,13 @@ using namespace std;
 
 #ifdef __xtensa__
 extern "C" void *dummyCalc(void *pA, int b);
-extern "C" void simdCalc(void *pA, size_t sz);
+extern "C" void simdCpy(void *pSrc, void *pDst);
+extern "C" void simdClear(void *pDst);
+extern "C" void simdLdQr(void *pSrc, void *pDst);
+
+static char bufSimdA[57];
+static char bufSimdB[57];
+static char bufSimdC[57];
 #endif
 
 AudioProcessing::AudioProcessing()
@@ -110,16 +116,42 @@ Success AudioProcessing::process()
 		mpLed->procTreeDisplaySet(false);
 		start(mpLed);
 
+		bufSimdInit();
+
+		cmdReg(
+			"ldqr",
+			BIND_MEMBER_FN(cmdSimdLdQr),
+			"", "Load QR. Usage: ldqr [offset]",
+			"Assembler Instructions");
+
+		cmdReg(
+			"clear",
+			BIND_MEMBER_FN(cmdSimdClear),
+			"", "Clear SIMD style",
+			"Assembler Instructions");
+
+		cmdReg(
+			"cpy",
+			BIND_MEMBER_FN(cmdSimdCpy),
+			"", "Copy SIMD style",
+			"Assembler Instructions");
+
+		cmdReg(
+			"print",
+			BIND_MEMBER_FN(cmdBufSimdPrint),
+			"", "Print SIMD buffer",
+			"Assembler Instructions");
+
+		cmdReg(
+			"init",
+			BIND_MEMBER_FN(cmdBufSimdInit),
+			"", "Initialize SIMD buffer",
+			"Assembler Instructions");
+
 		cmdReg(
 			"calc",
 			&AudioProcessing::cmdDummyCalc,
 			"", "Make dummy calculation",
-			"Assembler Instructions");
-
-		cmdReg(
-			"simd",
-			BIND_MEMBER_FN(cmdSimdCalc),
-			"", "Make SIMD calculation",
 			"Assembler Instructions");
 #endif
 		mpPool = ThreadPooling::create();
@@ -172,32 +204,79 @@ void AudioProcessing::wifiCheck()
 		mpLed->paramSet(50, 200, 2, 600);
 }
 
-void AudioProcessing::cmdSimdCalc(char *pArgs, char *pBuf, char *pBufEnd)
+void AudioProcessing::cmdSimdLdQr(char *pArgs, char *pBuf, char *pBufEnd)
 {
-	char data[27];
-	char *pBase, *pData, *pEnd;
-	size_t i;
+	const char *pA = bufSimdA;
+	void *pC = addrAlign(bufSimdC);
+	int offset = 0;
+
+	if (pArgs)
+		offset = strtol(pArgs, NULL, 0);
+
+	pA += offset;
+
+	dInfo("bufSimdA = %p, pA = %p\n", bufSimdA, pA);
+	dInfo("bufSimdC = %p, pC = %p\n", bufSimdC, pC);
+
+	simdLdQr((void *)pA, pC);
+}
+
+void AudioProcessing::cmdSimdClear(char *pArgs, char *pBuf, char *pBufEnd)
+{
+	void *pC = addrAlign(bufSimdC);
 
 	(void)pArgs;
 
-	pBase = data + 1;
-	pEnd = pBase + sizeof(data);
+	dInfo("bufSimdC = %p, pC = %p\n", bufSimdC, pC);
 
-	dInfo("Base %p\n", pBase);
+	simdClear(pC);
+}
 
-	i = 0;
-	for (pData = pBase; pData < pEnd; ++pData, ++i)
-		*pData = i + 1;
+void AudioProcessing::cmdSimdCpy(char *pArgs, char *pBuf, char *pBufEnd)
+{
+	void *pA = addrAlign(bufSimdA);
+	void *pC = addrAlign(bufSimdC);
 
-	i = 0;
-	for (pData = pBase; pData < pEnd; ++pData, ++i)
-		dInfo("%2zu = %2d\n", i, (int)*pData);
+	(void)pArgs;
 
-	simdCalc(pData, pEnd - pBase);
+	dInfo("bufSimdA = %p, pA = %p\n", bufSimdA, pA);
+	dInfo("bufSimdC = %p, pC = %p\n", bufSimdC, pC);
 
-	i = 0;
-	for (pData = pBase; pData < pEnd; ++pData, ++i)
-		dInfo("%2zu = %2d\n", i, (int)*pData);
+	simdCpy(pA, pC);
+}
+
+void AudioProcessing::cmdBufSimdPrint(char *pArgs, char *pBuf, char *pBufEnd)
+{
+	pBuf += hexDumpPrint(pBuf, pBufEnd, bufSimdA, sizeof(bufSimdA), "Buffer A");
+	pBuf += hexDumpPrint(pBuf, pBufEnd, bufSimdB, sizeof(bufSimdA), "Buffer B");
+	pBuf += hexDumpPrint(pBuf, pBufEnd, bufSimdC, sizeof(bufSimdA), "Buffer C");
+}
+
+void AudioProcessing::cmdBufSimdInit(char *pArgs, char *pBuf, char *pBufEnd)
+{
+	(void)pArgs;
+	bufSimdInit();
+	dInfo("SIMD buffer initialized");
+}
+
+void AudioProcessing::bufSimdInit()
+{
+	size_t i;
+
+	for (i = 0; i < sizeof(bufSimdA); ++i)
+	{
+		bufSimdA[i] = i;
+		bufSimdB[i] = i;
+		bufSimdC[i] = 0;
+	}
+}
+
+void *AudioProcessing::addrAlign(void *pData)
+{
+	int tmp = (intptr_t)pData;
+	tmp &= ~0xf;
+	tmp += 16;
+	return (void *)tmp;
 }
 #endif
 
@@ -252,7 +331,7 @@ void AudioProcessing::cmdDummyCalc(char *pArgs, char *pBuf, char *pBufEnd)
 	void *pRes;
 
 	if (pArgs)
-		offset = strtol(pArgs, NULL, 10);
+		offset = strtol(pArgs, NULL, 0);
 
 	pRes = dummyCalc(pBase, offset);
 

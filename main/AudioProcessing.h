@@ -63,7 +63,13 @@ private:
 
 #ifdef __xtensa__
 	void wifiCheck();
-	void cmdSimdCalc(char *pArgs, char *pBuf, char *pBufEnd);
+	void cmdSimdLdQr(char *pArgs, char *pBuf, char *pBufEnd);
+	void cmdSimdClear(char *pArgs, char *pBuf, char *pBufEnd);
+	void cmdSimdCpy(char *pArgs, char *pBuf, char *pBufEnd);
+	void cmdBufSimdPrint(char *pArgs, char *pBuf, char *pBufEnd);
+	void cmdBufSimdInit(char *pArgs, char *pBuf, char *pBufEnd);
+	void bufSimdInit();
+	void *addrAlign(void *pData);
 #endif
 	/* member variables */
 	uint32_t mStartMs;
