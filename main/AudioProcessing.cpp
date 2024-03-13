@@ -248,8 +248,8 @@ void AudioProcessing::cmdSimdCpy(char *pArgs, char *pBuf, char *pBufEnd)
 void AudioProcessing::cmdBufSimdPrint(char *pArgs, char *pBuf, char *pBufEnd)
 {
 	pBuf += hexDumpPrint(pBuf, pBufEnd, bufSimdA, sizeof(bufSimdA), "Buffer A");
-	pBuf += hexDumpPrint(pBuf, pBufEnd, bufSimdB, sizeof(bufSimdA), "Buffer B");
-	pBuf += hexDumpPrint(pBuf, pBufEnd, bufSimdC, sizeof(bufSimdA), "Buffer C");
+	pBuf += hexDumpPrint(pBuf, pBufEnd, bufSimdB, sizeof(bufSimdB), "Buffer B");
+	pBuf += hexDumpPrint(pBuf, pBufEnd, bufSimdC, sizeof(bufSimdC), "Buffer C");
 }
 
 void AudioProcessing::cmdBufSimdInit(char *pArgs, char *pBuf, char *pBufEnd)
