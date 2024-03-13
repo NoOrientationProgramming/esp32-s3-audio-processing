@@ -137,22 +137,22 @@ Success AudioProcessing::process()
 			"Assembler Instructions");
 
 		cmdReg(
+			"calc",
+			&AudioProcessing::cmdDummyCalc,
+			"", "Make dummy calculation",
+			"Assembler Instructions");
+
+		cmdReg(
 			"print",
 			BIND_MEMBER_FN(cmdBufSimdPrint),
 			"", "Print SIMD buffer",
-			"Assembler Instructions");
+			"SIMD Buffer");
 
 		cmdReg(
 			"init",
 			BIND_MEMBER_FN(cmdBufSimdInit),
 			"", "Initialize SIMD buffer",
-			"Assembler Instructions");
-
-		cmdReg(
-			"calc",
-			&AudioProcessing::cmdDummyCalc,
-			"", "Make dummy calculation",
-			"Assembler Instructions");
+			"SIMD Buffer");
 #endif
 		mpPool = ThreadPooling::create();
 		if (!mpPool)
