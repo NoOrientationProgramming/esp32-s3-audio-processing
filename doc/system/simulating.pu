@@ -1,0 +1,54 @@
+
+@startuml
+
+' skinparam linetype ortho
+
+component "PC - Simulating()" as pc {
+  component "Signal-\nGenerating()\nIN_PC" as gen
+  component "Visualizing()\nOUT_PC" as visu
+
+  gen -[hidden] visu
+}
+
+component "ESP32S3 - AudioProcessing()" as esp {
+  database "Input\nSamples" as bufIn
+  database "Output\nSamples" as bufOut
+  component "Filtering()" as filt
+  component "Selecting()" as sel
+
+  component "Simulation-\nInteracting()" as simuInteract {
+    component "Samples-\nListening()" as listen
+    component "Samples-\nSending()" as send
+  }
+
+  component "Hardware Modules" as modHw {
+    component "Sampling()\n(ADC / DMA)" as adc
+    component "Serializing()" as ser
+  }
+
+  sel -> bufIn
+  bufIn -> filt
+  filt -> bufOut
+
+  sel <-- adc
+  bufOut --> ser
+  
+  listen --> sel
+  send <-- bufOut
+}
+
+component "Environment" as env {
+  component "Anti-Aliasing\nFilter\nIN_ENV" as filtAA
+  component "DAC +\nReconstruction\nFilter\nOUT_ENV" as dac
+}
+
+gen --> listen
+visu <-- send
+
+adc <-- filtAA
+ser --> dac
+
+footer **Architecture** Digital Signal Processing Hardware and Simulation \n(C) DSP-Crowd Electronics GmbH
+
+@enduml
+
