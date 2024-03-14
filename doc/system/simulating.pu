@@ -23,7 +23,7 @@ component "ESP32S3 - AudioProcessing()" as esp {
 
   component "Hardware Modules" as modHw {
     component "Sampling()\n(ADC / DMA)" as adc
-    component "Serializing()" as ser
+    component "DMA +\nSerializing()" as ser
   }
 
   sel -> bufIn
