@@ -20,14 +20,14 @@ link gen to visu--><!--MD5=[c57b0ad4b52d97daa44c3a3daf737acc]
 link sel to bufIn--><g id="link_sel_bufIn"><path d="M137.23,409 C147.18,409 157.13,409 167.08,409 " fill="none" id="sel-to-bufIn" style="stroke:#181818;stroke-width:1.0;"/><polygon fill="#181818" points="172.28,409,163.28,405,167.28,409,163.28,413,172.28,409" style="stroke:#181818;stroke-width:1.0;"/></g><!--MD5=[4ea088d59c99644f178b6d5b2386f95e]
 link bufIn to filt--><g id="link_bufIn_filt"><path d="M251.69,409 C261.66,409 271.63,409 281.6,409 " fill="none" id="bufIn-to-filt" style="stroke:#181818;stroke-width:1.0;"/><polygon fill="#181818" points="286.82,409,277.82,405,281.82,409,277.82,413,286.82,409" style="stroke:#181818;stroke-width:1.0;"/></g><!--MD5=[c3aac19d6c19b1bbcfbadd62667ac6a0]
 link filt to bufOut--><g id="link_filt_bufOut"><path d="M391.09,409 C401.14,409 411.19,409 421.24,409 " fill="none" id="filt-to-bufOut" style="stroke:#181818;stroke-width:1.0;"/><polygon fill="#181818" points="426.5,409,417.5,405,421.5,409,417.5,413,426.5,409" style="stroke:#181818;stroke-width:1.0;"/></g><!--MD5=[581d41cb6762ba25016fc66e235d5347]
-reverse link sel to adc--><g id="link_sel_adc"><path d="M103.3,436.24 C119.94,454.98 142.39,480.26 159.84,499.92 " fill="none" id="sel-backto-adc" style="stroke:#181818;stroke-width:1.0;"/><polygon fill="#181818" points="99.63,432.1,102.6196,441.4841,102.9518,435.837,108.5989,436.1692,99.63,432.1" style="stroke:#181818;stroke-width:1.0;"/></g><!--MD5=[2db480cbc450f0fcbb066215edb939a6]
-link bufOut to ser--><g id="link_bufOut_ser"><path d="M435.53,440.1 C418.34,457.08 396.79,478.36 378.92,496.01 " fill="none" id="bufOut-to-ser" style="stroke:#181818;stroke-width:1.0;"/><polygon fill="#181818" points="374.93,499.95,384.1436,496.4702,378.4869,496.436,378.5212,490.7792,374.93,499.95" style="stroke:#181818;stroke-width:1.0;"/></g><!--MD5=[5edd2d9f8423aebf5b9f58e6604f6b1b]
+reverse link sel to adc--><g id="link_sel_adc"><path d="M103.3,436.24 C119.94,454.98 142.39,480.26 159.84,499.92 " fill="none" id="sel-backto-adc" style="stroke:#181818;stroke-width:1.0;stroke-dasharray:7.0,7.0;"/><polygon fill="#181818" points="99.63,432.1,102.6196,441.4841,102.9518,435.837,108.5989,436.1692,99.63,432.1" style="stroke:#181818;stroke-width:1.0;"/></g><!--MD5=[2db480cbc450f0fcbb066215edb939a6]
+link bufOut to ser--><g id="link_bufOut_ser"><path d="M435.53,440.1 C418.34,457.08 396.79,478.36 378.92,496.01 " fill="none" id="bufOut-to-ser" style="stroke:#181818;stroke-width:1.0;stroke-dasharray:7.0,7.0;"/><polygon fill="#181818" points="374.93,499.95,384.1436,496.4702,378.4869,496.436,378.5212,490.7792,374.93,499.95" style="stroke:#181818;stroke-width:1.0;"/></g><!--MD5=[5edd2d9f8423aebf5b9f58e6604f6b1b]
 link listen to sel--><g id="link_listen_sel"><path d="M164.19,318.22 C145.68,337.96 121.9,363.32 104.33,382.05 " fill="none" id="listen-to-sel" style="stroke:#181818;stroke-width:1.0;"/><polygon fill="#181818" points="100.91,385.71,109.9911,381.8977,104.3368,382.069,104.1655,376.4147,100.91,385.71" style="stroke:#181818;stroke-width:1.0;"/></g><!--MD5=[892ec069977b669e18bda8acd8264337]
 reverse link send to bufOut--><g id="link_send_bufOut"><path d="M374.33,321.7 C393.08,339.35 415.76,360.71 433.87,377.75 " fill="none" id="send-backto-bufOut" style="stroke:#181818;stroke-width:1.0;"/><polygon fill="#181818" points="370.63,318.22,374.4423,327.3011,374.271,321.6468,379.9253,321.4755,370.63,318.22" style="stroke:#181818;stroke-width:1.0;"/></g><!--MD5=[cc186886d0d91ac8552e50471f0b49df]
 link gen to listen--><g id="link_gen_listen"><path d="M186.52,121.16 C187.98,158.22 190.17,213.71 191.59,249.76 " fill="none" id="gen-to-listen" style="stroke:#181818;stroke-width:1.0;"/><polygon fill="#181818" points="191.8,254.93,195.4632,245.7877,191.6144,249.9334,187.4687,246.0847,191.8,254.93" style="stroke:#181818;stroke-width:1.0;"/></g><!--MD5=[a25f40ff57468fe40fde1b3823e9cd63]
 reverse link visu to send--><g id="link_visu_send"><path d="M343.76,118.41 C342.43,157.12 340.32,218.11 339.06,254.71 " fill="none" id="visu-backto-send" style="stroke:#181818;stroke-width:1.0;"/><polygon fill="#181818" points="343.94,113.33,339.6331,122.1872,343.7682,118.327,347.6284,122.4621,343.94,113.33" style="stroke:#181818;stroke-width:1.0;"/></g><!--MD5=[fb996e6ea9647d2623660ce7a655a84f]
-reverse link adc to filtAA--><g id="link_adc_filtAA"><path d="M185.58,568.15 C184.41,597.69 182.74,639.58 181.54,669.9 " fill="none" id="adc-backto-filtAA" style="stroke:#181818;stroke-width:1.0;"/><polygon fill="#181818" points="185.78,563.16,181.4235,571.9929,185.5802,568.156,189.4171,572.3127,185.78,563.16" style="stroke:#181818;stroke-width:1.0;"/></g><!--MD5=[9069e1bb13c87116593524f8b212e7ae]
-link ser to dac--><g id="link_ser_dac"><path d="M345.05,563.16 C345.92,588.95 347.2,626.37 348.24,656.79 " fill="none" id="ser-to-dac" style="stroke:#181818;stroke-width:1.0;"/><polygon fill="#181818" points="348.41,661.99,352.1245,652.8685,348.2525,656.9925,344.1285,653.1205,348.41,661.99" style="stroke:#181818;stroke-width:1.0;"/></g><rect fill="none" height="23.2813" style="stroke:none;stroke-width:1.0;" width="321" x="96" y="778"/><text fill="#888888" font-family="sans-serif" font-size="10" font-weight="bold" lengthAdjust="spacing" textLength="72" x="96" y="787.2822">Architecture</text><text fill="#888888" font-family="sans-serif" font-size="10" lengthAdjust="spacing" textLength="243" x="171" y="787.2822">Digital Signal Processing Hardware and Simulation</text><text fill="#888888" font-family="sans-serif" font-size="10" lengthAdjust="spacing" textLength="167" x="173" y="798.9229">(C) DSP-Crowd Electronics GmbH</text><!--MD5=[91bb8d31c428f64d33f408ee77c8445d]
+reverse link adc to filtAA--><g id="link_adc_filtAA"><path d="M185.58,568.15 C184.41,597.69 182.74,639.58 181.54,669.9 " fill="none" id="adc-backto-filtAA" style="stroke:#181818;stroke-width:1.0;stroke-dasharray:7.0,7.0;"/><polygon fill="#181818" points="185.78,563.16,181.4235,571.9929,185.5802,568.156,189.4171,572.3127,185.78,563.16" style="stroke:#181818;stroke-width:1.0;"/></g><!--MD5=[9069e1bb13c87116593524f8b212e7ae]
+link ser to dac--><g id="link_ser_dac"><path d="M345.05,563.16 C345.92,588.95 347.2,626.37 348.24,656.79 " fill="none" id="ser-to-dac" style="stroke:#181818;stroke-width:1.0;stroke-dasharray:7.0,7.0;"/><polygon fill="#181818" points="348.41,661.99,352.1245,652.8685,348.2525,656.9925,344.1285,653.1205,348.41,661.99" style="stroke:#181818;stroke-width:1.0;"/></g><rect fill="none" height="23.2813" style="stroke:none;stroke-width:1.0;" width="321" x="96" y="778"/><text fill="#888888" font-family="sans-serif" font-size="10" font-weight="bold" lengthAdjust="spacing" textLength="72" x="96" y="787.2822">Architecture</text><text fill="#888888" font-family="sans-serif" font-size="10" lengthAdjust="spacing" textLength="243" x="171" y="787.2822">Digital Signal Processing Hardware and Simulation</text><text fill="#888888" font-family="sans-serif" font-size="10" lengthAdjust="spacing" textLength="167" x="173" y="798.9229">(C) DSP-Crowd Electronics GmbH</text><!--MD5=[34a08a1a56c93719560cdf5bbb71affb]
 @startuml
 
 ' skinparam linetype ortho
@@ -59,8 +59,8 @@ component "ESP32S3 - AudioProcessing()" as esp {
   bufIn -> filt
   filt -> bufOut
 
-  sel <- - adc
-  bufOut - -> ser
+  sel <.. adc
+  bufOut ..> ser
   
   listen - -> sel
   send <- - bufOut
@@ -74,8 +74,8 @@ component "Environment" as env {
 gen - -> listen
 visu <- - send
 
-adc <- - filtAA
-ser - -> dac
+adc <.. filtAA
+ser ..> dac
 
 footer **Architecture** Digital Signal Processing Hardware and Simulation \n(C) DSP-Crowd Electronics GmbH
 
@@ -111,8 +111,8 @@ component "ESP32S3 - AudioProcessing()" as esp {
   bufIn -> filt
   filt -> bufOut
 
-  sel <- - adc
-  bufOut - -> ser
+  sel <.. adc
+  bufOut ..> ser
   
   listen - -> sel
   send <- - bufOut
@@ -126,8 +126,8 @@ component "Environment" as env {
 gen - -> listen
 visu <- - send
 
-adc <- - filtAA
-ser - -> dac
+adc <.. filtAA
+ser ..> dac
 
 footer **Architecture** Digital Signal Processing Hardware and Simulation \n(C) DSP-Crowd Electronics GmbH
 

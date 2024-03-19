@@ -30,8 +30,8 @@ component "ESP32S3 - AudioProcessing()" as esp {
   bufIn -> filt
   filt -> bufOut
 
-  sel <-- adc
-  bufOut --> ser
+  sel <.. adc
+  bufOut ..> ser
   
   listen --> sel
   send <-- bufOut
@@ -45,8 +45,8 @@ component "Environment" as env {
 gen --> listen
 visu <-- send
 
-adc <-- filtAA
-ser --> dac
+adc <.. filtAA
+ser ..> dac
 
 footer **Architecture** Digital Signal Processing Hardware and Simulation \n(C) DSP-Crowd Electronics GmbH
 
