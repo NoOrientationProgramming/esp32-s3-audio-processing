@@ -4,8 +4,8 @@
 ' skinparam linetype ortho
 
 component "PC - Simulating()" as pc {
-  component "Signal-\nGenerating()\nIN_PC" as gen
-  component "Visualizing()\nOUT_PC" as visu
+  component "Signal-\nGenerating()\nIN_PC\nPressure: HH/H" as gen
+  component "Visualizing()\nOUT_PC\nPressure: L" as visu
 
   gen -[hidden] visu
 }
@@ -32,14 +32,17 @@ component "ESP32S3 - AudioProcessing()" as esp {
 
   sel <.. adc
   bufOut ..> ser
-  
+
   listen --> sel
   send <-- bufOut
+
+  send -[hidden]- filt
+  filt -[hidden]- ser
 }
 
 component "Environment" as env {
-  component "Anti-Aliasing\nFilter\nIN_ENV" as filtAA
-  component "DAC +\nReconstruction\nFilter\nOUT_ENV" as dac
+  component "Anti-Aliasing\nFilter\nIN_ENV\nPressure: HH" as filtAA
+  component "DAC +\nReconstruction\nFilter\nOUT_ENV\nPressure: LL" as dac
 }
 
 gen --> listen
