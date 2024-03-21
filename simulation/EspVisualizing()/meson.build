@@ -11,16 +11,18 @@ deps += dependency('threads')
 deps += dependency('Qt6Core')
 deps += dependency('Qt6Gui')
 deps += dependency('Qt6Widgets')
-deps += dependency('Python3')
+deps += dependency('Qt6Charts')
 
 args = []
 args += '-DCONFIG_PROC_HAVE_LOG=1'
 args += '-DCONFIG_PROC_INFO_BUFFER_SIZE=1024'
 args += '-std=gnu++17'
 args += '-isystem'
-args += '/usr/include/python3.10'
+args += '/usr/include/x86_64-linux-gnu/qt6/QtCore/'
 args += '-isystem'
 args += '/usr/include/x86_64-linux-gnu/qt6/QtWidgets/'
+args += '-isystem'
+args += '/usr/include/x86_64-linux-gnu/qt6/QtCharts/'
 
 if host_machine.system() == 'windows'
 	args += '-D_WIN32_WINNT=_WIN32_WINNT_WIN10'
