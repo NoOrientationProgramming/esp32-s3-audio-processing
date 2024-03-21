@@ -27,7 +27,7 @@
 #define ESP_SIMULATING_H
 
 #include "Processing.h"
-#include "EspVisualizing.h"
+#include "SimUserInteracting.h"
 #include "PhyAnimating.h"
 
 class EspSimulating : public Processing
@@ -61,7 +61,7 @@ private:
 
 	/* member variables */
 	uint32_t mStartMs;
-	EspVisualizing *mpVisu;
+	SimUserInteracting *mpVisu;
 
 	/* static functions */
 

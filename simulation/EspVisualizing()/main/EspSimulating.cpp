@@ -74,7 +74,7 @@ Success EspSimulating::process()
 
 		start(pThread);
 
-		mpVisu = EspVisualizing::create();
+		mpVisu = SimUserInteracting::create();
 		if (!mpVisu)
 			return procErrLog(-1, "could not create process");
 

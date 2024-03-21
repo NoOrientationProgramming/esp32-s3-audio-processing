@@ -23,30 +23,30 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ESP_VISUALIZING_H
-#define ESP_VISUALIZING_H
+#ifndef SIM_USER_INTERACTING_H
+#define SIM_USER_INTERACTING_H
 
 #include "PhyAnimating.h"
 
-class EspVisualizing : public PhyAnimating
+class SimUserInteracting : public PhyAnimating
 {
 
 public:
 
-	static EspVisualizing *create()
+	static SimUserInteracting *create()
 	{
-		return new (std::nothrow) EspVisualizing;
+		return new (std::nothrow) SimUserInteracting;
 	}
 
 protected:
 
-	EspVisualizing();
-	virtual ~EspVisualizing() {}
+	SimUserInteracting();
+	virtual ~SimUserInteracting() {}
 
 private:
 
-	EspVisualizing(const EspVisualizing &) : PhyAnimating("") {}
-	EspVisualizing &operator=(const EspVisualizing &) { return *this; }
+	SimUserInteracting(const SimUserInteracting &) : PhyAnimating("") {}
+	SimUserInteracting &operator=(const SimUserInteracting &) { return *this; }
 
 	/*
 	 * Naming of functions:  objectVerb()

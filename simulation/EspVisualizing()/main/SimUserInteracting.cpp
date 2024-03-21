@@ -23,7 +23,7 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "EspVisualizing.h"
+#include "SimUserInteracting.h"
 
 #define dForEach_ProcState(gen) \
 		gen(StStart) \
@@ -41,8 +41,8 @@ using namespace std;
 
 #define LOG_LVL	0
 
-EspVisualizing::EspVisualizing()
-	: PhyAnimating("EspVisualizing")
+SimUserInteracting::SimUserInteracting()
+	: PhyAnimating("SimUserInteracting")
 	, mStartMs(0)
 	, mpButton(NULL)
 {
@@ -51,7 +51,7 @@ EspVisualizing::EspVisualizing()
 
 /* member functions */
 
-Success EspVisualizing::animate()
+Success SimUserInteracting::animate()
 {
 	//uint32_t curTimeMs = millis();
 	//uint32_t diffMs = curTimeMs - mStartMs;
@@ -86,7 +86,7 @@ Success EspVisualizing::animate()
 	return Pending;
 }
 
-void EspVisualizing::processInfo(char *pBuf, char *pBufEnd)
+void SimUserInteracting::processInfo(char *pBuf, char *pBufEnd)
 {
 #if 1
 	dInfo("State\t\t\t%s\n", ProcStateString[mState]);
