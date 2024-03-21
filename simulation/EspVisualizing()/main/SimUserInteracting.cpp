@@ -44,7 +44,9 @@ using namespace std;
 SimUserInteracting::SimUserInteracting()
 	: PhyAnimating("SimUserInteracting")
 	, mStartMs(0)
-	, mpButton(NULL)
+	, mpTxtIp(NULL)
+	, mpBtnSave(NULL)
+	, mpSlFreq(NULL)
 {
 	mState = StStart;
 }
@@ -56,6 +58,7 @@ Success SimUserInteracting::animate()
 	//uint32_t curTimeMs = millis();
 	//uint32_t diffMs = curTimeMs - mStartMs;
 	//Success success;
+	QLineSeries *pSeries;
 #if 0
 	dStateTrace;
 #endif
@@ -63,12 +66,33 @@ Success SimUserInteracting::animate()
 	{
 	case StStart:
 
-		mpButton = new QPushButton("Hello Text!", mpWindow);
-		if (!mpButton)
+		mpTxtIp = uiLineEditAdd("Heloooo");
+		if (!mpTxtIp)
+			return procErrLog(-1, "could not create text edit");
+
+		mpTxtIp->setPlaceholderText("Device IP");
+
+		mpSlFreq = uiSliderAdd(7, 0.0, "Frequency", "Hz", true);
+		if (!mpSlFreq)
+			return procErrLog(-1, "could not create slider");
+
+		mpOpt->addStretch(1);
+
+		mpBtnSave = new QPushButton("Save Plot");
+		if (!mpBtnSave)
 			return procErrLog(-1, "could not create button");
 
-		mpOpt->addWidget(mpButton);
-		mpOpt->addStretch(1);
+		mpOpt->addWidget(mpBtnSave);
+
+		pSeries = new QLineSeries();
+		if (!pSeries)
+			return procErrLog(-1, "could not create series");
+
+		pSeries->append(0, 6);
+		pSeries->append(2, 4);
+
+		mpChart->addSeries(pSeries);
+		mpChart->createDefaultAxes();
 
 		mpWindow->setWindowTitle("ESP32S3 Simulating()");
 		mpWindow->show();

@@ -59,7 +59,9 @@ private:
 
 	/* member variables */
 	uint32_t mStartMs;
-	QPushButton *mpButton;
+	QLineEdit *mpTxtIp;
+	QPushButton *mpBtnSave;
+	QSlider *mpSlFreq;
 
 	/* static functions */
 
