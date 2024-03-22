@@ -50,6 +50,7 @@ SimUserInteracting::SimUserInteracting()
 	, mpSlFreq(NULL)
 	, mpBtnSave(NULL)
 	, mpStat(NULL)
+	, mpChart(NULL)
 {
 	mState = StStart;
 }
@@ -107,6 +108,10 @@ Success SimUserInteracting::animate()
 			return procErrLog(-1, "could not create status label");
 
 		mpStat->setText("OK");
+
+		mpChart = uiChartAdd();
+		if (!mpChart)
+			return procErrLog(-1, "could not create chart");
 
 		seriesAdd();
 
