@@ -75,9 +75,11 @@ Success SimUserInteracting::animate()
 		if (!mpSlFreq)
 			return procErrLog(-1, "could not create slider");
 
+		uiLineAdd();
+
 		mpOpt->addStretch(1);
 
-		mpBtnSave = uiPushButtonAdd("Save Plot");
+		mpBtnSave = uiButtonAdd("Save Plot");
 		if (!mpBtnSave)
 			return procErrLog(-1, "could not create button");
 
@@ -101,7 +103,6 @@ Success SimUserInteracting::animate()
 
 void SimUserInteracting::seriesAdd()
 {
-#if 0
 	QLineSeries *pSeries;
 
 	pSeries = new (nothrow) QLineSeries();
@@ -113,34 +114,7 @@ void SimUserInteracting::seriesAdd()
 
 	pSeries->append(0, 6);
 	pSeries->append(2, 4);
-#else
-	auto set0 = new QBarSet("Jane");
-	auto set1 = new QBarSet("John");
-	auto set2 = new QBarSet("Axel");
-	auto set3 = new QBarSet("Mary");
-	auto set4 = new QBarSet("Samantha");
 
-	*set0 << 1 << 2 << 3 << 4 << 5 << 6;
-	*set1 << 5 << 0 << 0 << 4 << 0 << 7;
-	*set2 << 3 << 5 << 8 << 13 << 8 << 5;
-	*set3 << 5 << 6 << 7 << 3 << 4 << 5;
-	*set4 << 9 << 7 << 5 << 3 << 1 << 2;
-
-	QBarSeries *pSeries;
-
-	pSeries = new (nothrow) QBarSeries();
-	if (!pSeries)
-	{
-		procErrLog(-1, "could not create series");
-		return;
-	}
-
-	pSeries->append(set0);
-	pSeries->append(set1);
-	pSeries->append(set2);
-	pSeries->append(set3);
-	pSeries->append(set4);
-#endif
 	mpChart->addSeries(pSeries);
 	mpChart->createDefaultAxes();
 }
