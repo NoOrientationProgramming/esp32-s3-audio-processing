@@ -115,7 +115,7 @@ Success SimUserInteracting::animate()
 
 		seriesAdd();
 
-		mpWindow->setWindowTitle("ESP32S3 Simulating()");
+		mpWindow->setWindowTitle("ESP32S3 - Simulating()");
 		mpWindow->show();
 
 		mState = StMain;
