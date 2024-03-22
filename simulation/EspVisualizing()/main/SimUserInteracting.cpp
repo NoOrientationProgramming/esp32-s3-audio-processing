@@ -74,7 +74,7 @@ Success SimUserInteracting::animate()
 		if (!mpTxtIp)
 			return procErrLog(-1, "could not create text edit");
 
-		mpTxtIp->setPlaceholderText("Device IP");
+		mpTxtIp->setPlaceholderText("Device: <ip>[:port]");
 
 		uiLineAdd();
 
