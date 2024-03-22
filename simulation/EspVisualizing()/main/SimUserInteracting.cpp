@@ -45,8 +45,10 @@ SimUserInteracting::SimUserInteracting()
 	: PhyAnimating("SimUserInteracting")
 	, mStartMs(0)
 	, mpTxtIp(NULL)
-	, mpBtnSave(NULL)
+	, mpSwGen(NULL)
+	, mpProgress(NULL)
 	, mpSlFreq(NULL)
+	, mpBtnSave(NULL)
 {
 	mState = StStart;
 }
@@ -65,17 +67,31 @@ Success SimUserInteracting::animate()
 	{
 	case StStart:
 
-		mpTxtIp = uiLineEditAdd("Heloooo");
+		uiLineAdd();
+
+		mpTxtIp = uiLineEditAdd();
 		if (!mpTxtIp)
 			return procErrLog(-1, "could not create text edit");
 
 		mpTxtIp->setPlaceholderText("Device IP");
 
+		uiLineAdd();
+
+		mpSwGen = uiSwitchAdd("Generate signal");
+		if (!mpSwGen)
+			return procErrLog(-1, "could not create switch");
+
+		mpProgress = uiProgressAdd("Send buffer");
+		if (!mpProgress)
+			return procErrLog(-1, "could not create progress bar");
+
+		mpProgress->setValue(39);
+
+		uiLineAdd();
+
 		mpSlFreq = uiSliderAdd(7, 0.0, "Frequency", "Hz", true);
 		if (!mpSlFreq)
 			return procErrLog(-1, "could not create slider");
-
-		uiLineAdd();
 
 		mpOpt->addStretch(1);
 
