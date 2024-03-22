@@ -8,4 +8,5 @@ dependencies.lock
 
 *Int.h
 *.diff
+*.core
 
