@@ -13,16 +13,19 @@ deps += dependency('Qt6Gui')
 deps += dependency('Qt6Widgets')
 deps += dependency('Qt6Charts')
 
-args = []
-args += '-DCONFIG_PROC_HAVE_LOG=1'
-args += '-DCONFIG_PROC_INFO_BUFFER_SIZE=1024'
-args += '-std=gnu++17'
-args += '-isystem'
-args += '/usr/include/x86_64-linux-gnu/qt6/QtCore/'
-args += '-isystem'
-args += '/usr/include/x86_64-linux-gnu/qt6/QtWidgets/'
-args += '-isystem'
-args += '/usr/include/x86_64-linux-gnu/qt6/QtCharts/'
+args = [
+	'-DCONFIG_PROC_SHOW_ADDRESS_IN_ID=0',
+	'-DCONFIG_PROC_HAVE_LOG=1',
+	'-DCONFIG_PROC_INFO_BUFFER_SIZE=1024',
+	'-std=gnu++17',
+	'-isystem',
+	'/usr/include/x86_64-linux-gnu/qt6/QtCore/',
+	'-isystem',
+	'/usr/include/x86_64-linux-gnu/qt6/QtWidgets/',
+	'-isystem',
+	'/usr/include/x86_64-linux-gnu/qt6/QtCharts/',
+	'-g',
+]
 
 if host_machine.system() == 'windows'
 	args += '-D_WIN32_WINNT=_WIN32_WINNT_WIN10'
@@ -75,6 +78,7 @@ myApp = executable(
 		'../../components/ProcessingCore/TcpListening.cpp',
 		'../../components/ProcessingCore/TcpTransfering.cpp',
 		'../../components/ProcessingCommon/LibTime.cpp',
+		'../../components/ProcessingCommon/LibFilesys.cpp',
 		'../../components/ProcessingCommon/ThreadPooling.cpp',
 		'../../components/ProcessingCommon/PhyAnimating.cpp',
 		'main/main.cpp',
