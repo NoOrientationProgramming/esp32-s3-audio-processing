@@ -12,6 +12,7 @@ deps += dependency('Qt6Core')
 deps += dependency('Qt6Gui')
 deps += dependency('Qt6Widgets')
 deps += dependency('Qt6Charts')
+# deps += dependency('OpenCV')
 
 args = [
 	'-DCONFIG_PROC_SHOW_ADDRESS_IN_ID=0',
