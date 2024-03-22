@@ -58,7 +58,6 @@ Success SimUserInteracting::animate()
 	//uint32_t curTimeMs = millis();
 	//uint32_t diffMs = curTimeMs - mStartMs;
 	//Success success;
-	QLineSeries *pSeries;
 #if 0
 	dStateTrace;
 #endif
@@ -78,21 +77,11 @@ Success SimUserInteracting::animate()
 
 		mpOpt->addStretch(1);
 
-		mpBtnSave = new QPushButton("Save Plot");
+		mpBtnSave = uiPushButtonAdd("Save Plot");
 		if (!mpBtnSave)
 			return procErrLog(-1, "could not create button");
 
-		mpOpt->addWidget(mpBtnSave);
-
-		pSeries = new QLineSeries();
-		if (!pSeries)
-			return procErrLog(-1, "could not create series");
-
-		pSeries->append(0, 6);
-		pSeries->append(2, 4);
-
-		mpChart->addSeries(pSeries);
-		mpChart->createDefaultAxes();
+		seriesAdd();
 
 		mpWindow->setWindowTitle("ESP32S3 Simulating()");
 		mpWindow->show();
@@ -108,6 +97,52 @@ Success SimUserInteracting::animate()
 	}
 
 	return Pending;
+}
+
+void SimUserInteracting::seriesAdd()
+{
+#if 0
+	QLineSeries *pSeries;
+
+	pSeries = new (nothrow) QLineSeries();
+	if (!pSeries)
+	{
+		procErrLog(-1, "could not create series");
+		return;
+	}
+
+	pSeries->append(0, 6);
+	pSeries->append(2, 4);
+#else
+	auto set0 = new QBarSet("Jane");
+	auto set1 = new QBarSet("John");
+	auto set2 = new QBarSet("Axel");
+	auto set3 = new QBarSet("Mary");
+	auto set4 = new QBarSet("Samantha");
+
+	*set0 << 1 << 2 << 3 << 4 << 5 << 6;
+	*set1 << 5 << 0 << 0 << 4 << 0 << 7;
+	*set2 << 3 << 5 << 8 << 13 << 8 << 5;
+	*set3 << 5 << 6 << 7 << 3 << 4 << 5;
+	*set4 << 9 << 7 << 5 << 3 << 1 << 2;
+
+	QBarSeries *pSeries;
+
+	pSeries = new (nothrow) QBarSeries();
+	if (!pSeries)
+	{
+		procErrLog(-1, "could not create series");
+		return;
+	}
+
+	pSeries->append(set0);
+	pSeries->append(set1);
+	pSeries->append(set2);
+	pSeries->append(set3);
+	pSeries->append(set4);
+#endif
+	mpChart->addSeries(pSeries);
+	mpChart->createDefaultAxes();
 }
 
 void SimUserInteracting::processInfo(char *pBuf, char *pBufEnd)

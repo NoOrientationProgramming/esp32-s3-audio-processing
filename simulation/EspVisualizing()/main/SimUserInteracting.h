@@ -57,6 +57,8 @@ private:
 	Success animate();
 	void processInfo(char *pBuf, char *pBufEnd);
 
+	void seriesAdd();
+
 	/* member variables */
 	uint32_t mStartMs;
 	QLineEdit *mpTxtIp;
