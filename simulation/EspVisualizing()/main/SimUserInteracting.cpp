@@ -95,7 +95,7 @@ Success SimUserInteracting::animate()
 
 		mpOpt->addStretch(1);
 
-		mpBtnSave = uiButtonAdd("Save Plot");
+		mpBtnSave = uiButtonAdd("&Save Plot");
 		if (!mpBtnSave)
 			return procErrLog(-1, "could not create button");
 
