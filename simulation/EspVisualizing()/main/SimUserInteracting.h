@@ -66,6 +66,7 @@ private:
 	QProgressBar *mpProgress;
 	QSlider *mpSlFreq;
 	QPushButton *mpBtnSave;
+	QLabel *mpStat;
 
 	/* static functions */
 

@@ -49,6 +49,7 @@ SimUserInteracting::SimUserInteracting()
 	, mpProgress(NULL)
 	, mpSlFreq(NULL)
 	, mpBtnSave(NULL)
+	, mpStat(NULL)
 {
 	mState = StStart;
 }
@@ -98,6 +99,14 @@ Success SimUserInteracting::animate()
 		mpBtnSave = uiButtonAdd("&Save Plot");
 		if (!mpBtnSave)
 			return procErrLog(-1, "could not create button");
+
+		uiLineAdd();
+
+		mpStat = uiLabelAdd("Status");
+		if (!mpStat)
+			return procErrLog(-1, "could not create status label");
+
+		mpStat->setText("OK");
 
 		seriesAdd();
 
