@@ -36,7 +36,7 @@ int main(int argc, char *argv[])
 	while (1)
 	{
 		pApp->treeTick();
-		this_thread::sleep_for(chrono::milliseconds(2));
+		this_thread::sleep_for(chrono::milliseconds(20));
 
 		if (pApp->progress())
 			continue;
