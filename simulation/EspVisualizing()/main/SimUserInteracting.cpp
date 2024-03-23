@@ -91,7 +91,7 @@ Success SimUserInteracting::animate()
 
 		uiLineAdd();
 
-		mpSlFreq = uiSliderAdd(20000, 0.0, "Frequency", "Hz", true);
+		mpSlFreq = uiSliderAdd(20000, 1000.0, "Frequency", "Hz");
 		if (!mpSlFreq)
 			return procErrLog(-1, "could not create slider");
 
