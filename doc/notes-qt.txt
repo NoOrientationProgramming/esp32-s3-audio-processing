@@ -2,3 +2,13 @@
 Literature
 - https://code.qt.io/cgit/qt/qtbase.git/
 
+Files
+- kernel/qcoreapplication.cpp - QCoreApplication::exec()
+- kernel/qeventloop.cpp
+  - QEventLoop::exec()
+    - QEventLoop::processEvents()
+- thread/qthread_p.h
+  - QThreadData
+  - QAtomicPointer<QThread> thread;
+- thread/qatomic_cxx11.h - loadAcquire()
+
