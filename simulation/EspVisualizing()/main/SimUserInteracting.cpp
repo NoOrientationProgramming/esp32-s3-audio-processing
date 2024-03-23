@@ -87,7 +87,7 @@ Success SimUserInteracting::animate()
 		if (!mpProgress)
 			return procErrLog(-1, "could not create progress bar");
 
-		mpProgress->setValue(39);
+		//mpProgress->setValue(39);
 
 		uiLineAdd();
 
