@@ -63,7 +63,8 @@ private:
 	uint32_t mStartMs;
 	QLineEdit *mpTxtIp;
 	QCheckBox *mpSwGen;
-	QProgressBar *mpProgress;
+	QProgressBar *mpPrgBuffOut;
+	QProgressBar *mpPrgBuffRemote;
 	QSlider *mpSlFreq;
 	QPushButton *mpBtnSave;
 	QLabel *mpStat;

@@ -46,7 +46,8 @@ SimUserInteracting::SimUserInteracting()
 	, mStartMs(0)
 	, mpTxtIp(NULL)
 	, mpSwGen(NULL)
-	, mpProgress(NULL)
+	, mpPrgBuffOut(NULL)
+	, mpPrgBuffRemote(NULL)
 	, mpSlFreq(NULL)
 	, mpBtnSave(NULL)
 	, mpStat(NULL)
@@ -83,11 +84,15 @@ Success SimUserInteracting::animate()
 		if (!mpSwGen)
 			return procErrLog(-1, "could not create switch");
 
-		mpProgress = uiProgressAdd("Send buffer");
-		if (!mpProgress)
+		mpPrgBuffOut = uiProgressAdd("Send buffer");
+		if (!mpPrgBuffOut)
 			return procErrLog(-1, "could not create progress bar");
 
-		//mpProgress->setValue(39);
+		//mpPrgBuffOut->setValue(39);
+
+		mpPrgBuffRemote = uiProgressAdd("Remote buffer");
+		if (!mpPrgBuffRemote)
+			return procErrLog(-1, "could not create progress bar");
 
 		uiLineAdd();
 
