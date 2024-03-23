@@ -65,7 +65,7 @@ Success EspSimulating::process()
 	switch (mState)
 	{
 	case StStart:
-
+#if 0
 		pThread = ThreadPooling::create();
 		if (!pThread)
 			return procErrLog(-1, "could not create process");
@@ -73,6 +73,9 @@ Success EspSimulating::process()
 		pThread->workerCntSet(3);
 
 		start(pThread);
+#else
+		(void)pThread;
+#endif
 #if 0
 		mpVisu = SimUserInteracting::create();
 		if (!mpVisu)
