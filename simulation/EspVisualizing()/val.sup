@@ -1,6 +1,6 @@
 
 {
-   <insert_a_suppression_name_here>
+   QXcbIntegration
    Memcheck:Leak
    match-leak-kinds: possible
    ...
@@ -9,7 +9,7 @@
 }
 
 {
-   <insert_a_suppression_name_here>
+   dl_catch_exception
    Memcheck:Addr8
    ...
    fun:_dl_catch_exception
@@ -17,7 +17,7 @@
 }
 
 {
-   <insert_a_suppression_name_here>
+   g_thread_new
    Memcheck:Leak
    match-leak-kinds: possible
    ...
