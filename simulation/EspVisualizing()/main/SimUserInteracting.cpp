@@ -41,6 +41,7 @@ dProcessStateStr(ProcState);
 #endif
 
 // ---------------------------------------
+
 #define dForEach_SigGenState(gen) \
 		gen(StStartWait) \
 		gen(StStopWait) \
@@ -53,6 +54,7 @@ dProcessStateEnum(SigGenState);
 #define dGenSigGenStateString(s) #s,
 dProcessStateStr(SigGenState);
 #endif
+
 // ---------------------------------------
 
 using namespace std;
