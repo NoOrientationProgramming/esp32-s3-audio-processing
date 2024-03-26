@@ -27,6 +27,7 @@
 #define SIM_USER_INTERACTING_H
 
 #include "PhyAnimating.h"
+#include "SignalGenerating.h"
 
 class SimUserInteracting : public PhyAnimating
 {
@@ -55,11 +56,13 @@ private:
 
 	/* member functions */
 	Success animate();
+	void sigGenProcess();
 	void processInfo(char *pBuf, char *pBufEnd);
 
 	void seriesAdd();
 
 	/* member variables */
+	uint32_t mStateSigGen;
 	uint32_t mStartMs;
 	QLineEdit *mpTxtIp;
 	QCheckBox *mpSwGen;
@@ -69,6 +72,8 @@ private:
 	QPushButton *mpBtnSave;
 	QLabel *mpStat;
 	QChart *mpChart;
+	bool mSwGenCheckedOld;
+	SignalGenerating *mpGen;
 
 	/* static functions */
 

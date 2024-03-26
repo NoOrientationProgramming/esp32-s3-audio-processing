@@ -24,6 +24,9 @@
 */
 
 #include "SimUserInteracting.h"
+#include "ThreadPooling.h"
+
+// ---------------------------------------
 
 #define dForEach_ProcState(gen) \
 		gen(StStart) \
@@ -37,12 +40,28 @@ dProcessStateEnum(ProcState);
 dProcessStateStr(ProcState);
 #endif
 
+// ---------------------------------------
+#define dForEach_SigGenState(gen) \
+		gen(StStartWait) \
+		gen(StStopWait) \
+		gen(StSdDoneWait) \
+
+#define dGenSigGenStateEnum(s) s,
+dProcessStateEnum(SigGenState);
+
+#if 1
+#define dGenSigGenStateString(s) #s,
+dProcessStateStr(SigGenState);
+#endif
+// ---------------------------------------
+
 using namespace std;
 
 #define LOG_LVL	0
 
 SimUserInteracting::SimUserInteracting()
 	: PhyAnimating("SimUserInteracting")
+	, mStateSigGen(StStartWait)
 	, mStartMs(0)
 	, mpTxtIp(NULL)
 	, mpSwGen(NULL)
@@ -52,6 +71,8 @@ SimUserInteracting::SimUserInteracting()
 	, mpBtnSave(NULL)
 	, mpStat(NULL)
 	, mpChart(NULL)
+	, mSwGenCheckedOld(false)
+	, mpGen(NULL)
 {
 	mState = StStart;
 }
@@ -128,12 +149,79 @@ Success SimUserInteracting::animate()
 		break;
 	case StMain:
 
+		sigGenProcess();
+
 		break;
 	default:
 		break;
 	}
 
 	return Pending;
+}
+
+void SimUserInteracting::sigGenProcess()
+{
+	//uint32_t curTimeMs = millis();
+	//uint32_t diffMs = curTimeMs - mStartMs;
+	//Success success;
+	bool swGenChecked;
+	bool genStartReq;
+#if 0
+	dStateTrace;
+#endif
+	switch (mStateSigGen)
+	{
+	case StStartWait:
+
+		if (!mpSwGen)
+			break;
+
+		swGenChecked = mpSwGen->isChecked();
+		genStartReq = !mSwGenCheckedOld && swGenChecked;
+		mSwGenCheckedOld = swGenChecked;
+
+		if (!genStartReq)
+			break;
+
+		mpGen = SignalGenerating::create();
+		if (!mpGen)
+		{
+			procErrLog(-1, "could not create process");
+			break;
+		}
+#if 0
+		start(mpGen, DrivenByNewInternalDriver);
+#else
+		start(mpGen, DrivenByExternalDriver);
+		ThreadPooling::procAdd(mpGen);
+#endif
+		mStateSigGen = StStopWait;
+
+		break;
+	case StStopWait:
+
+		if (mpSwGen->isChecked())
+			break;
+
+		cancel(mpGen);
+
+		mStateSigGen = StSdDoneWait;
+
+		break;
+	case StSdDoneWait:
+
+		if (!mpGen->shutdownDone())
+			break;
+
+		repel(mpGen);
+		mpGen = NULL;
+
+		mStateSigGen = StStartWait;
+
+		break;
+	default:
+		break;
+	}
 }
 
 void SimUserInteracting::seriesAdd()
@@ -158,6 +246,7 @@ void SimUserInteracting::processInfo(char *pBuf, char *pBufEnd)
 {
 #if 1
 	dInfo("State\t\t\t%s\n", ProcStateString[mState]);
+	dInfo("Signal Generator\t\t%s\n", SigGenStateString[mStateSigGen]);
 #endif
 }
 
