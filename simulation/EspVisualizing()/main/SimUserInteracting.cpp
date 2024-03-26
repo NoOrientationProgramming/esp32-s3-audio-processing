@@ -43,9 +43,9 @@ dProcessStateStr(ProcState);
 // ---------------------------------------
 
 #define dForEach_SigGenState(gen) \
-		gen(StStartWait) \
-		gen(StStopWait) \
-		gen(StSdDoneWait) \
+		gen(StSgStartWait) \
+		gen(StSgStopWait) \
+		gen(StSgSdDoneWait) \
 
 #define dGenSigGenStateEnum(s) s,
 dProcessStateEnum(SigGenState);
@@ -63,7 +63,7 @@ using namespace std;
 
 SimUserInteracting::SimUserInteracting()
 	: PhyAnimating("SimUserInteracting")
-	, mStateSigGen(StStartWait)
+	, mStateSigGen(StSgStartWait)
 	, mStartMs(0)
 	, mpTxtIp(NULL)
 	, mpSwGen(NULL)
@@ -173,7 +173,7 @@ void SimUserInteracting::sigGenProcess()
 #endif
 	switch (mStateSigGen)
 	{
-	case StStartWait:
+	case StSgStartWait:
 
 		if (!mpSwGen)
 			break;
@@ -197,20 +197,20 @@ void SimUserInteracting::sigGenProcess()
 		start(mpGen, DrivenByExternalDriver);
 		ThreadPooling::procAdd(mpGen);
 #endif
-		mStateSigGen = StStopWait;
+		mStateSigGen = StSgStopWait;
 
 		break;
-	case StStopWait:
+	case StSgStopWait:
 
 		if (mpSwGen->isChecked())
 			break;
 
 		cancel(mpGen);
 
-		mStateSigGen = StSdDoneWait;
+		mStateSigGen = StSgSdDoneWait;
 
 		break;
-	case StSdDoneWait:
+	case StSgSdDoneWait:
 
 		if (!mpGen->shutdownDone())
 			break;
@@ -218,7 +218,7 @@ void SimUserInteracting::sigGenProcess()
 		repel(mpGen);
 		mpGen = NULL;
 
-		mStateSigGen = StStartWait;
+		mStateSigGen = StSgStartWait;
 
 		break;
 	default:
