@@ -185,12 +185,15 @@ void SimUserInteracting::sigGenProcess()
 		if (!genStartReq)
 			break;
 
-		mpGen = SignalGenerating::create();
+		mpGen = SamplesSineGenerating::create();
 		if (!mpGen)
 		{
 			procErrLog(-1, "could not create process");
 			break;
 		}
+
+		mpGen->frequenciesSet(1000, 10000);
+		mpGen->bufferSizeSet(5, 16);
 #if 0
 		start(mpGen, DrivenByNewInternalDriver);
 #else
@@ -202,10 +205,14 @@ void SimUserInteracting::sigGenProcess()
 		break;
 	case StSgStopWait:
 
+		mpPrgBuffOut->setValue(
+			(100 * mpGen->ppPktSamples.size()) / mpGen->ppPktSamples.sizeMax());
+
 		if (mpSwGen->isChecked())
 			break;
 
 		cancel(mpGen);
+		mpPrgBuffOut->setValue(0);
 
 		mStateSigGen = StSgSdDoneWait;
 
@@ -247,8 +254,8 @@ void SimUserInteracting::seriesAdd()
 void SimUserInteracting::processInfo(char *pBuf, char *pBufEnd)
 {
 #if 1
-	dInfo("State\t\t\t%s\n", ProcStateString[mState]);
-	dInfo("Signal Generator\t\t%s\n", SigGenStateString[mStateSigGen]);
+	dInfo("State\t\t%s\n", ProcStateString[mState]);
+	dInfo("Signal Generator\t%s\n", SigGenStateString[mStateSigGen]);
 #endif
 }
 

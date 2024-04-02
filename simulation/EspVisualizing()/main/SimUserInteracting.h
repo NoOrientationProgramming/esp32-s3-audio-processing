@@ -27,7 +27,7 @@
 #define SIM_USER_INTERACTING_H
 
 #include "PhyAnimating.h"
-#include "SignalGenerating.h"
+#include "SamplesSineGenerating.h"
 
 class SimUserInteracting : public PhyAnimating
 {
@@ -73,7 +73,7 @@ private:
 	QLabel *mpStat;
 	QChart *mpChart;
 	bool mSwGenCheckedOld;
-	SignalGenerating *mpGen;
+	SamplesSineGenerating *mpGen;
 
 	/* static functions */
 
