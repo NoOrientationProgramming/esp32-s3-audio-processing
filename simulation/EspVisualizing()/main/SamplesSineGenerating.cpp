@@ -101,19 +101,22 @@ Success SamplesSineGenerating::process()
 		break;
 	case StMain:
 
-		if (ppPktSamples.isFull())
-			break;
-
-		if (!mpSamplesWork)
+		for (size_t i = 0; i < 6481; ++i)
 		{
-			mpSamplesWork = new (nothrow) vector<int16_t>();
-			//procWrnLog("created new sample packet  %p", mpSamplesWork);
+			if (ppPktSamples.isFull())
+				break;
+
+			if (!mpSamplesWork)
+			{
+				mpSamplesWork = new (nothrow) vector<int16_t>();
+				//procWrnLog("created new sample packet  %p", mpSamplesWork);
+			}
+
+			if (!mpSamplesWork)
+				return procErrLog(-1, "could not create sample buffer");
+
+			sampleCreate();
 		}
-
-		if (!mpSamplesWork)
-			return procErrLog(-1, "could not create sample buffer");
-
-		sampleCreate();
 
 		break;
 	case StTmp:
