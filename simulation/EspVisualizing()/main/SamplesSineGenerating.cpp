@@ -81,7 +81,7 @@ Success SamplesSineGenerating::process()
 
 		// Parameter check
 
-		if (mFreqSampleHz < 1000 || mFreqSampleHz > 30000)
+		if (mFreqSampleHz < 1000 || mFreqSampleHz > 60000)
 			return procErrLog(-1, "sample frequency out of range");
 
 		if (mNumPkts < 1 || mNumPkts > 1000)
