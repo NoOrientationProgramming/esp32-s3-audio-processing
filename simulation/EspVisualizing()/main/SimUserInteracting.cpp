@@ -196,8 +196,10 @@ void SimUserInteracting::sigGenProcess()
 
 		mpGen->frequenciesSet(1200, 50000);
 
-		mpGen->bufferSizeSet(5, 16);
-		mpGen->bufferSizeSet(1000, 1000);
+		// Param 2: 333 Samples per pkt => 666 Bytes on network per pkt
+		// Param 1: 751 Pkts => ~5s buffer for 50kHz: 250k samples
+		mpGen->bufferSizeSet(751, 333);
+		mpGen->pressurePktSet(6000);
 #if 0
 		start(mpGen, DrivenByNewInternalDriver);
 #else

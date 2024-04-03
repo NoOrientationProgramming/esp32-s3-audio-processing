@@ -45,6 +45,10 @@ public:
 
 	void frequenciesSet(uint32_t freqSignal, uint32_t freqSample = 0);
 	void bufferSizeSet(uint16_t numPkts, uint16_t numSamplesPerPkt);
+
+	// Unit:
+	// Max number of samples which can be created
+	// per software system cycle
 	void pressurePktSet(uint16_t pressurePkt);
 
 	// output
