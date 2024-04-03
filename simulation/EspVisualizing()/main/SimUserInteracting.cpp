@@ -111,11 +111,13 @@ Success SimUserInteracting::animate()
 		if (!mpPrgBuffOut)
 			return procErrLog(-1, "could not create progress bar");
 
-		//mpPrgBuffOut->setValue(39);
+		mpPrgBuffOut->setValue(0);
 
 		mpPrgBuffRemote = uiProgressAdd("Remote buffer");
 		if (!mpPrgBuffRemote)
 			return procErrLog(-1, "could not create progress bar");
+
+		mpPrgBuffRemote->setValue(0);
 
 		uiLineAdd();
 
