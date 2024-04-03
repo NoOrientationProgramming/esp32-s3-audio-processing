@@ -45,6 +45,7 @@ public:
 
 	void frequenciesSet(uint32_t freqSignal, uint32_t freqSample = 0);
 	void bufferSizeSet(uint16_t numPkts, uint16_t numSamplesPerPkt);
+	void pressurePktSet(uint16_t pressurePkt);
 
 	// output
 
@@ -80,6 +81,7 @@ private:
 	uint32_t mFreqSampleHz;
 	uint16_t mNumPkts;
 	uint16_t mNumSamplesPerPkt;
+	uint16_t mPressurePkt;
 
 	/* Literature
 	- https://www.math.utah.edu/~alfeld/math/p10000.html

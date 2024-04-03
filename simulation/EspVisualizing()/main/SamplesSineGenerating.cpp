@@ -48,11 +48,12 @@ using namespace std;
 SamplesSineGenerating::SamplesSineGenerating()
 	: Processing("SamplesSineGenerating")
 	, mStartMs(0)
-	// Config
+	// Config. Use odd number in general
 	, mFreqSignalHz(1051)
 	, mFreqSampleHz(10000)
 	, mNumPkts(37)
 	, mNumSamplesPerPkt(89)
+	, mPressurePkt(6481)
 	// Process states
 	, mDx(0.0)
 	, mDy(0.0)
@@ -101,7 +102,7 @@ Success SamplesSineGenerating::process()
 		break;
 	case StMain:
 
-		for (size_t i = 0; i < 6481; ++i)
+		for (size_t i = 0; i < mPressurePkt; ++i)
 		{
 			if (ppPktSamples.isFull())
 				break;
@@ -213,6 +214,11 @@ void SamplesSineGenerating::bufferSizeSet(uint16_t numPkts, uint16_t numSamplesP
 {
 	mNumPkts = numPkts;
 	mNumSamplesPerPkt = numSamplesPerPkt;
+}
+
+void SamplesSineGenerating::pressurePktSet(uint16_t pressurePkt)
+{
+	mPressurePkt = pressurePkt;
 }
 
 void SamplesSineGenerating::processInfo(char *pBuf, char *pBufEnd)
