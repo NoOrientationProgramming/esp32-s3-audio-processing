@@ -125,6 +125,8 @@ Success SimUserInteracting::animate()
 		if (!mpSlFreq)
 			return procErrLog(-1, "could not create slider");
 
+		mpSlFreq->setMinimum(mpSlFreq->value());
+
 		mpOpt->addStretch(1);
 
 		mpBtnSave = uiButtonAdd("&Save Plot");
