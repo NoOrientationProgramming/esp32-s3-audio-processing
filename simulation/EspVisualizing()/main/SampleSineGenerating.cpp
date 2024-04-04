@@ -26,7 +26,7 @@
 #include <cinttypes>
 #include <cmath>
 
-#include "SamplesSineGenerating.h"
+#include "SampleSineGenerating.h"
 
 #define dForEach_ProcState(gen) \
 		gen(StStart) \
@@ -45,8 +45,8 @@ using namespace std;
 
 #define LOG_LVL	0
 
-SamplesSineGenerating::SamplesSineGenerating()
-	: Processing("SamplesSineGenerating")
+SampleSineGenerating::SampleSineGenerating()
+	: Processing("SampleSineGenerating")
 	, mStartMs(0)
 	// Config. Use odd number in general
 	, mFreqSignalHz(1051)
@@ -68,7 +68,7 @@ SamplesSineGenerating::SamplesSineGenerating()
 
 /* member functions */
 
-Success SamplesSineGenerating::process()
+Success SampleSineGenerating::process()
 {
 	//uint32_t curTimeMs = millis();
 	//uint32_t diffMs = curTimeMs - mStartMs;
@@ -102,6 +102,9 @@ Success SamplesSineGenerating::process()
 		break;
 	case StMain:
 
+		// Transfer ownership to connected pipes
+		ppPktSamples.toPushTry();
+
 		for (size_t i = 0; i < mPressurePkt; ++i)
 		{
 			if (ppPktSamples.isFull())
@@ -130,7 +133,7 @@ Success SamplesSineGenerating::process()
 	return Pending;
 }
 
-Success SamplesSineGenerating::shutdown()
+Success SampleSineGenerating::shutdown()
 {
 	if (mpSamplesWork)
 	{
@@ -152,7 +155,7 @@ Success SamplesSineGenerating::shutdown()
 	return Positive;
 }
 
-void SamplesSineGenerating::sampleCreate()
+void SampleSineGenerating::sampleCreate()
 {
 	if (!mSamplesWritten)
 		mpSamplesWork->reserve(mNumSamplesPerPkt);
@@ -178,15 +181,13 @@ void SamplesSineGenerating::sampleCreate()
 	ppPktSamples.commit(mpSamplesWork);
 	mpSamplesWork = NULL;
 	mSamplesWritten = 0;
-
-	ppPktSamples.toPushTry();
 }
 
-void SamplesSineGenerating::amplitudeNormalize()
+void SampleSineGenerating::amplitudeNormalize()
 {
 }
 
-void SamplesSineGenerating::frequenciesSet(uint32_t freqSignalHz, uint32_t freqSampleHz)
+void SampleSineGenerating::frequenciesSet(uint32_t freqSignalHz, uint32_t freqSampleHz)
 {
 	if (mFreqSignalHz < 1000 || mFreqSignalHz > 30000)
 	{
@@ -202,7 +203,7 @@ void SamplesSineGenerating::frequenciesSet(uint32_t freqSignalHz, uint32_t freqS
 	coeffUpdate();
 }
 
-void SamplesSineGenerating::coeffUpdate()
+void SampleSineGenerating::coeffUpdate()
 {
 	float a = 2 * M_PI * mFreqSignalHz / mFreqSampleHz;
 
@@ -210,18 +211,18 @@ void SamplesSineGenerating::coeffUpdate()
 	mDy = sinf(a);
 }
 
-void SamplesSineGenerating::bufferSizeSet(uint16_t numPkts, uint16_t numSamplesPerPkt)
+void SampleSineGenerating::bufferSizeSet(uint16_t numPkts, uint16_t numSamplesPerPkt)
 {
 	mNumPkts = numPkts;
 	mNumSamplesPerPkt = numSamplesPerPkt;
 }
 
-void SamplesSineGenerating::pressurePktSet(uint16_t pressurePkt)
+void SampleSineGenerating::pressurePktSet(uint16_t pressurePkt)
 {
 	mPressurePkt = pressurePkt;
 }
 
-void SamplesSineGenerating::processInfo(char *pBuf, char *pBufEnd)
+void SampleSineGenerating::processInfo(char *pBuf, char *pBufEnd)
 {
 #if 1
 	dInfo("State\t\t\t%s\n", ProcStateString[mState]);
@@ -234,7 +235,7 @@ void SamplesSineGenerating::processInfo(char *pBuf, char *pBufEnd)
 	dInfo("Number of packets\t%" PRIu16 "\n", mNumPkts);
 	dInfo("Number of samples/pkt\t%" PRIu16 "\n", mNumSamplesPerPkt);
 
-	dInfo("Send buffer\t");
+	dInfo("Sample buffer\t");
 	pBuf += progressStr(pBuf, pBufEnd,
 		ppPktSamples.size(),
 		ppPktSamples.sizeMax());

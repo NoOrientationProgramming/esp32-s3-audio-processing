@@ -86,7 +86,8 @@ myApp = executable(
 		'main/AppSupervising.cpp',
 		'main/EspSimulating.cpp',
 		'main/SimUserInteracting.cpp',
-		'main/SamplesSineGenerating.cpp',
+		'main/SampleSineGenerating.cpp',
+		'main/SampleSending.cpp',
 	],
 	include_directories : include_directories([
 		'../../components/ProcessingCore',

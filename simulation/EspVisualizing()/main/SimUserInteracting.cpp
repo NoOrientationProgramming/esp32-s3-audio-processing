@@ -23,6 +23,8 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <signal.h>
+
 #include "SimUserInteracting.h"
 #include "ThreadPooling.h"
 
@@ -75,6 +77,7 @@ SimUserInteracting::SimUserInteracting()
 	, mpChart(NULL)
 	, mSwGenCheckedOld(false)
 	, mpGen(NULL)
+	, mpSend(NULL)
 {
 	mState = StStart;
 }
@@ -107,13 +110,13 @@ Success SimUserInteracting::animate()
 		if (!mpSwGen)
 			return procErrLog(-1, "could not create switch");
 
-		mpPrgBuffOut = uiProgressAdd("Send buffer");
+		mpPrgBuffOut = uiProgressAdd("Sample buffer");
 		if (!mpPrgBuffOut)
 			return procErrLog(-1, "could not create progress bar");
 
 		mpPrgBuffOut->setValue(0);
 
-		mpPrgBuffRemote = uiProgressAdd("Remote buffer");
+		mpPrgBuffRemote = uiProgressAdd("Remote target buffer");
 		if (!mpPrgBuffRemote)
 			return procErrLog(-1, "could not create progress bar");
 
@@ -189,7 +192,8 @@ void SimUserInteracting::sigGenProcess()
 		if (!genStartReq)
 			break;
 
-		mpGen = SamplesSineGenerating::create();
+		// Generator
+		mpGen = SampleSineGenerating::create();
 		if (!mpGen)
 		{
 			procErrLog(-1, "could not create process");
@@ -201,13 +205,27 @@ void SimUserInteracting::sigGenProcess()
 		// Param 2: 333 Samples per pkt => 666 Bytes on network per pkt
 		// Param 1: 751 Pkts => ~5s buffer for 50kHz: 250k samples
 		mpGen->bufferSizeSet(751, 333);
-		mpGen->pressurePktSet(6000);
-#if 0
-		start(mpGen, DrivenByNewInternalDriver);
-#else
+		mpGen->pressurePktSet(2000);
+
 		start(mpGen, DrivenByExternalDriver);
 		ThreadPooling::procAdd(mpGen);
-#endif
+
+		// Sending
+		mpSend = SampleSending::create();
+		if (!mpSend)
+		{
+			procErrLog(-1, "could not create process");
+			repel(mpGen);
+			break;
+		}
+
+		mpSend->ppPktSamples.sizeMaxSet(10);
+
+		start(mpSend, DrivenByExternalDriver);
+		ThreadPooling::procAdd(mpSend);
+
+		mpGen->ppPktSamples.connect(&mpSend->ppPktSamples);
+
 		mStateSigGen = StSgStopWait;
 
 		break;
@@ -222,6 +240,9 @@ void SimUserInteracting::sigGenProcess()
 		cancel(mpGen);
 		mpPrgBuffOut->setValue(0);
 
+		cancel(mpSend);
+		mpPrgBuffRemote->setValue(0);
+
 		mStateSigGen = StSgSdDoneWait;
 
 		break;
@@ -230,8 +251,14 @@ void SimUserInteracting::sigGenProcess()
 		if (!mpGen->shutdownDone())
 			break;
 
+		if (!mpSend->shutdownDone())
+			break;
+
 		repel(mpGen);
 		mpGen = NULL;
+
+		repel(mpSend);
+		mpSend = NULL;
 
 		mStateSigGen = StSgStartWait;
 

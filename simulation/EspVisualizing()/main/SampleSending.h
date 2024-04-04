@@ -5,7 +5,7 @@
   Author(s):
       - Johannes Natter, office@dsp-crowd.com
 
-  File created on 20.03.2024
+  File created on 03.04.2024
 
   Copyright (C) 2024-now Authors and www.dsp-crowd.com
 
@@ -23,32 +23,37 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SIM_USER_INTERACTING_H
-#define SIM_USER_INTERACTING_H
+#ifndef SAMPLE_SENDING_H
+#define SAMPLE_SENDING_H
 
-#include "PhyAnimating.h"
-#include "SampleSineGenerating.h"
-#include "SampleSending.h"
+#include <vector>
 
-class SimUserInteracting : public PhyAnimating
+#include "Processing.h"
+#include "Pipe.h"
+
+class SampleSending : public Processing
 {
 
 public:
 
-	static SimUserInteracting *create()
+	static SampleSending *create()
 	{
-		return new (std::nothrow) SimUserInteracting;
+		return new (std::nothrow) SampleSending;
 	}
+
+	// input
+
+	Pipe<std::vector<int16_t> *> ppPktSamples;
 
 protected:
 
-	SimUserInteracting();
-	virtual ~SimUserInteracting() {}
+	SampleSending();
+	virtual ~SampleSending() {}
 
 private:
 
-	SimUserInteracting(const SimUserInteracting &) : PhyAnimating("") {}
-	SimUserInteracting &operator=(const SimUserInteracting &) { return *this; }
+	SampleSending(const SampleSending &) : Processing("") {}
+	SampleSending &operator=(const SampleSending &) { return *this; }
 
 	/*
 	 * Naming of functions:  objectVerb()
@@ -56,26 +61,14 @@ private:
 	 */
 
 	/* member functions */
-	Success animate();
-	void sigGenProcess();
+	Success process();
+	Success shutdown();
 	void processInfo(char *pBuf, char *pBufEnd);
 
-	void seriesAdd();
+	void samplesConsume();
 
 	/* member variables */
-	uint32_t mStateSigGen;
 	uint32_t mStartMs;
-	QLineEdit *mpTxtIp;
-	QCheckBox *mpSwGen;
-	QProgressBar *mpPrgBuffOut;
-	QProgressBar *mpPrgBuffRemote;
-	QSlider *mpSlFreq;
-	QPushButton *mpBtnSave;
-	QLabel *mpStat;
-	QChart *mpChart;
-	bool mSwGenCheckedOld;
-	SampleSineGenerating *mpGen;
-	SampleSending *mpSend;
 
 	/* static functions */
 

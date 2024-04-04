@@ -23,22 +23,22 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SAMPLES_SINE_GENERATING_H
-#define SAMPLES_SINE_GENERATING_H
+#ifndef SAMPLE_SINE_GENERATING_H
+#define SAMPLE_SINE_GENERATING_H
 
 #include <vector>
 
 #include "Processing.h"
 #include "Pipe.h"
 
-class SamplesSineGenerating : public Processing
+class SampleSineGenerating : public Processing
 {
 
 public:
 
-	static SamplesSineGenerating *create()
+	static SampleSineGenerating *create()
 	{
-		return new (std::nothrow) SamplesSineGenerating;
+		return new (std::nothrow) SampleSineGenerating;
 	}
 
 	// input
@@ -57,13 +57,13 @@ public:
 
 protected:
 
-	SamplesSineGenerating();
-	virtual ~SamplesSineGenerating() {}
+	SampleSineGenerating();
+	virtual ~SampleSineGenerating() {}
 
 private:
 
-	SamplesSineGenerating(const SamplesSineGenerating &) : Processing("") {}
-	SamplesSineGenerating &operator=(const SamplesSineGenerating &) { return *this; }
+	SampleSineGenerating(const SampleSineGenerating &) : Processing("") {}
+	SampleSineGenerating &operator=(const SampleSineGenerating &) { return *this; }
 
 	/*
 	 * Naming of functions:  objectVerb()
@@ -80,6 +80,8 @@ private:
 	void coeffUpdate();
 
 	/* member variables */
+
+	// Config
 	uint32_t mStartMs;
 	uint32_t mFreqSignalHz;
 	uint32_t mFreqSampleHz;
@@ -87,6 +89,7 @@ private:
 	uint16_t mNumSamplesPerPkt;
 	uint16_t mPressurePkt;
 
+	// Process states
 	/* Literature
 	- https://www.math.utah.edu/~alfeld/math/p10000.html
 	- https://stackoverflow.com/questions/69729326/endless-sine-generation-in-c
