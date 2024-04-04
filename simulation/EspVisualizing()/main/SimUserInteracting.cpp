@@ -240,7 +240,7 @@ void SimUserInteracting::sigGenProcess()
 		mpPrgBuffOut->setValue(
 			(100 * mpGen->mppPktSamples.size()) / mpGen->mppPktSamples.sizeMax());
 
-		if (diffMs > 200)
+		if (diffMs > 5000)
 		{
 			mpGen->probeRequest(dNumSamplesProbe, &mSamplesProbe);
 			mStateSigGen = StSgProbingDoneWait;
@@ -264,9 +264,9 @@ void SimUserInteracting::sigGenProcess()
 
 		if (mSamplesProbe.size() < dNumSamplesProbe)
 			break;
-#if 0
-		procWrnLog("Probing done: %u samples at address %p", dNumSamplesProbe, mSamplesProbe.data());
 
+		procWrnLog("Probing done: %u samples at address %p", dNumSamplesProbe, mSamplesProbe.data());
+#if 1
 		{
 			int16_t *pSample = mSamplesProbe.data();
 
