@@ -116,11 +116,13 @@ Success SampleSineGenerating::process()
 			if (!mpSamplesWork)
 			{
 				mpSamplesWork = new (nothrow) vector<int16_t>();
-				//procWrnLog("created new sample packet  %p", mpSamplesWork);
-			}
+				if (!mpSamplesWork)
+					return procErrLog(-1, "could not create sample buffer");
 
-			if (!mpSamplesWork)
-				return procErrLog(-1, "could not create sample buffer");
+				//procWrnLog("created new sample packet  %p", mpSamplesWork);
+
+				mpSamplesWork->reserve(mNumSamplesPerPkt);
+			}
 
 			sampleCreate();
 		}
@@ -160,9 +162,6 @@ Success SampleSineGenerating::shutdown()
 
 void SampleSineGenerating::sampleCreate()
 {
-	if (!mSamplesWritten)
-		mpSamplesWork->reserve(mNumSamplesPerPkt);
-
 	float xNew = mX * mDx - mY * mDy;
 	float yNew = mX * mDy + mY * mDx;
 
