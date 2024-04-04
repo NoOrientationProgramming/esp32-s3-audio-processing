@@ -23,10 +23,9 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <signal.h>
-
 #include "SimUserInteracting.h"
 #include "ThreadPooling.h"
+#include "LibTime.h"
 
 // ---------------------------------------
 
@@ -46,7 +45,10 @@ dProcessStateStr(ProcState);
 
 #define dForEach_SigGenState(gen) \
 		gen(StSgStartWait) \
-		gen(StSgStopWait) \
+		gen(StSgMain) \
+		gen(StSgProbingDoneWait) \
+		gen(StSgShutdown) \
+		gen(StSgSendSdDoneWait) \
 		gen(StSgSdDoneWait) \
 
 #define dGenSigGenStateEnum(s) s,
@@ -63,10 +65,13 @@ using namespace std;
 
 #define LOG_LVL	0
 
+#define dNumSamplesProbe 50
+
 SimUserInteracting::SimUserInteracting()
 	: PhyAnimating("SimUserInteracting")
 	, mStateSigGen(StSgStartWait)
 	, mStartMs(0)
+	, mStartDoneMs(0)
 	, mpTxtIp(NULL)
 	, mpSwGen(NULL)
 	, mpPrgBuffOut(NULL)
@@ -170,9 +175,9 @@ Success SimUserInteracting::animate()
 
 void SimUserInteracting::sigGenProcess()
 {
-	//uint32_t curTimeMs = millis();
-	//uint32_t diffMs = curTimeMs - mStartMs;
-	//Success success;
+	uint32_t curTimeMs = millis();
+	uint32_t diffMs = curTimeMs - mStartDoneMs;
+	Success success;
 	bool swGenChecked;
 	bool genStartReq;
 #if 0
@@ -200,7 +205,7 @@ void SimUserInteracting::sigGenProcess()
 			break;
 		}
 
-		mpGen->frequenciesSet(1200, 50000);
+		mpGen->frequenciesSet(1000, 50000);
 
 		// Param 2: 333 Samples per pkt => 666 Bytes on network per pkt
 		// Param 1: 751 Pkts => ~5s buffer for 50kHz: 250k samples
@@ -219,29 +224,82 @@ void SimUserInteracting::sigGenProcess()
 			break;
 		}
 
-		mpSend->ppPktSamples.sizeMaxSet(10);
+		mpSend->mppPktSamples.sizeMaxSet(10);
 
 		start(mpSend, DrivenByExternalDriver);
 		ThreadPooling::procAdd(mpSend);
 
-		mpGen->ppPktSamples.connect(&mpSend->ppPktSamples);
+		mpGen->mppPktSamples.connect(&mpSend->mppPktSamples);
 
-		mStateSigGen = StSgStopWait;
+		mStartDoneMs = curTimeMs;
+		mStateSigGen = StSgMain;
 
 		break;
-	case StSgStopWait:
+	case StSgMain:
 
 		mpPrgBuffOut->setValue(
-			(100 * mpGen->ppPktSamples.size()) / mpGen->ppPktSamples.sizeMax());
+			(100 * mpGen->mppPktSamples.size()) / mpGen->mppPktSamples.sizeMax());
+
+		if (diffMs > 200)
+		{
+			mpGen->probeRequest(dNumSamplesProbe, &mSamplesProbe);
+			mStateSigGen = StSgProbingDoneWait;
+			break;
+		}
 
 		if (mpSwGen->isChecked())
 			break;
 
-		cancel(mpGen);
-		mpPrgBuffOut->setValue(0);
+		mStateSigGen = StSgShutdown;
+
+		break;
+	case StSgProbingDoneWait:
+
+		success = mpGen->success();
+		if (success != Pending)
+		{
+			mStateSigGen = StSgShutdown;
+			break;
+		}
+
+		if (mSamplesProbe.size() < dNumSamplesProbe)
+			break;
+#if 0
+		procWrnLog("Probing done: %u samples at address %p", dNumSamplesProbe, mSamplesProbe.data());
+
+		{
+			int16_t *pSample = mSamplesProbe.data();
+
+			for (size_t i = 0; i < mSamplesProbe.size(); ++i, ++pSample)
+				procInfLog("Sample %2zu: %6d 0x%04x %6d 0x%04x", i,
+							mSamplesProbe[i], (uint16_t)mSamplesProbe[i],
+							*pSample, (uint16_t)*pSample);
+		}
+#endif
+		chartUpdate();
+
+		mStartDoneMs = curTimeMs;
+		mStateSigGen = StSgMain;
+
+		break;
+	case StSgShutdown:
 
 		cancel(mpSend);
 		mpPrgBuffRemote->setValue(0);
+
+		mStateSigGen = StSgSendSdDoneWait;
+
+		break;
+	case StSgSendSdDoneWait:
+
+		if (!mpSend->shutdownDone())
+			break;
+
+		repel(mpSend);
+		mpSend = NULL;
+
+		cancel(mpGen);
+		mpPrgBuffOut->setValue(0);
 
 		mStateSigGen = StSgSdDoneWait;
 
@@ -251,14 +309,8 @@ void SimUserInteracting::sigGenProcess()
 		if (!mpGen->shutdownDone())
 			break;
 
-		if (!mpSend->shutdownDone())
-			break;
-
 		repel(mpGen);
 		mpGen = NULL;
-
-		repel(mpSend);
-		mpSend = NULL;
 
 		mStateSigGen = StSgStartWait;
 
@@ -266,6 +318,10 @@ void SimUserInteracting::sigGenProcess()
 	default:
 		break;
 	}
+}
+
+void SimUserInteracting::chartUpdate()
+{
 }
 
 void SimUserInteracting::seriesAdd()

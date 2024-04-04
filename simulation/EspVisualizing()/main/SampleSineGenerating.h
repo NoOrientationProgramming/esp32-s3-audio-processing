@@ -50,10 +50,11 @@ public:
 	// Max number of samples which can be created
 	// per software system cycle
 	void pressurePktSet(uint16_t pressurePkt);
+	void probeRequest(size_t numSamples, std::vector<int16_t> *pProbeSamples);
 
 	// output
 
-	Pipe<std::vector<int16_t> *> ppPktSamples;
+	Pipe<std::vector<int16_t> *> mppPktSamples;
 
 protected:
 
@@ -76,6 +77,7 @@ private:
 	void processInfo(char *pBuf, char *pBufEnd);
 
 	void sampleCreate();
+	void probeSamplesCopy(int16_t sample);
 	void amplitudeNormalize();
 	void coeffUpdate();
 
@@ -100,8 +102,11 @@ private:
 	float mX;
 	float mY;
 	std::vector<int16_t> *mpSamplesWork;
+	std::vector<int16_t> *mpSamplesProbe;
+	size_t mNumSamplesProbeReq;
 	uint16_t mSamplesWritten;
 	bool mGenActive;
+	std::mutex mProbeMtx;
 
 	/* static functions */
 

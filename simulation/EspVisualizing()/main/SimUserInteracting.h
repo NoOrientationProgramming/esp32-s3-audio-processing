@@ -60,11 +60,13 @@ private:
 	void sigGenProcess();
 	void processInfo(char *pBuf, char *pBufEnd);
 
+	void chartUpdate();
 	void seriesAdd();
 
 	/* member variables */
 	uint32_t mStateSigGen;
 	uint32_t mStartMs;
+	uint32_t mStartDoneMs;
 	QLineEdit *mpTxtIp;
 	QCheckBox *mpSwGen;
 	QProgressBar *mpPrgBuffOut;
@@ -76,6 +78,7 @@ private:
 	bool mSwGenCheckedOld;
 	SampleSineGenerating *mpGen;
 	SampleSending *mpSend;
+	std::vector<int16_t> mSamplesProbe;
 
 	/* static functions */
 

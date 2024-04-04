@@ -60,8 +60,11 @@ SampleSineGenerating::SampleSineGenerating()
 	, mX(1.0)
 	, mY(0.0)
 	, mpSamplesWork(NULL)
+	, mpSamplesProbe(NULL)
+	, mNumSamplesProbeReq(0)
 	, mSamplesWritten(0)
 	, mGenActive(false)
+	, mProbeMtx()
 {
 	mState = StStart;
 }
@@ -91,7 +94,7 @@ Success SampleSineGenerating::process()
 		if (mNumSamplesPerPkt < 1 || mNumSamplesPerPkt > 1000)
 			return procErrLog(-1, "size of sample packets out of range");
 
-		ppPktSamples.sizeMaxSet(mNumPkts);
+		mppPktSamples.sizeMaxSet(mNumPkts);
 
 		coeffUpdate();
 
@@ -103,11 +106,11 @@ Success SampleSineGenerating::process()
 	case StMain:
 
 		// Transfer ownership to connected pipes
-		ppPktSamples.toPushTry();
+		mppPktSamples.toPushTry();
 
 		for (size_t i = 0; i < mPressurePkt; ++i)
 		{
-			if (ppPktSamples.isFull())
+			if (mppPktSamples.isFull())
 				break;
 
 			if (!mpSamplesWork)
@@ -144,9 +147,9 @@ Success SampleSineGenerating::shutdown()
 
 	PipeEntry<vector<int16_t> *> entry;
 
-	while (!ppPktSamples.isEmpty())
+	while (!mppPktSamples.isEmpty())
 	{
-		ppPktSamples.get(entry);
+		mppPktSamples.get(entry);
 		//procWrnLog("deleted buffer in pipe     %p", entry.particle);
 		delete entry.particle;
 		entry.particle = NULL;
@@ -169,6 +172,11 @@ void SampleSineGenerating::sampleCreate()
 	procWrnLog("sample                     %7" PRIi16, sample);
 #endif
 	mpSamplesWork->push_back(sample);
+
+	if (mpSamplesProbe)
+		// <-- Request may arrive here
+		probeSamplesCopy(sample);
+
 	mX = xNew, mY = yNew;
 
 	++mSamplesWritten;
@@ -178,9 +186,22 @@ void SampleSineGenerating::sampleCreate()
 	//procWrnLog("commited sample packet     %p", mpSamplesWork);
 	//procWrnLog("commited sample packet     %p", mpSamplesWork->data());
 
-	ppPktSamples.commit(mpSamplesWork);
+	mppPktSamples.commit(mpSamplesWork);
 	mpSamplesWork = NULL;
 	mSamplesWritten = 0;
+}
+
+void SampleSineGenerating::probeSamplesCopy(int16_t sample)
+{
+	Guard lock(mProbeMtx);
+
+	mpSamplesProbe->push_back(sample);
+
+	if (mpSamplesProbe->size() < mNumSamplesProbeReq)
+		return;
+
+	mpSamplesProbe = NULL;
+	mNumSamplesProbeReq = 0;
 }
 
 void SampleSineGenerating::amplitudeNormalize()
@@ -222,6 +243,23 @@ void SampleSineGenerating::pressurePktSet(uint16_t pressurePkt)
 	mPressurePkt = pressurePkt;
 }
 
+void SampleSineGenerating::probeRequest(size_t numSamples, vector<int16_t> *pSamplesProbe)
+{
+	if (!pSamplesProbe)
+	{
+		procWrnLog("probe request denied. No pointer given");
+		return;
+	}
+
+	Guard lock(mProbeMtx);
+
+	mpSamplesProbe = pSamplesProbe;
+	mNumSamplesProbeReq = numSamples;
+
+	mpSamplesProbe->clear();
+	mpSamplesProbe->reserve(mNumSamplesProbeReq);
+}
+
 void SampleSineGenerating::processInfo(char *pBuf, char *pBufEnd)
 {
 #if 1
@@ -237,8 +275,8 @@ void SampleSineGenerating::processInfo(char *pBuf, char *pBufEnd)
 
 	dInfo("Sample buffer\t");
 	pBuf += progressStr(pBuf, pBufEnd,
-		ppPktSamples.size(),
-		ppPktSamples.sizeMax());
+		mppPktSamples.size(),
+		mppPktSamples.sizeMax());
 	dInfo("\n");
 }
 

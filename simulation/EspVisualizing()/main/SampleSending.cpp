@@ -83,6 +83,23 @@ Success SampleSending::process()
 
 Success SampleSending::shutdown()
 {
+	mppPktSamples.parentDisconnect();
+
+	PipeEntry<vector<int16_t> *> entry;
+
+	while (!mppPktSamples.isEmpty())
+	{
+		mppPktSamples.get(entry);
+		//procWrnLog("deleted buffer in pipe     %p", entry.particle);
+		delete entry.particle;
+		entry.particle = NULL;
+	}
+
+	// Caution!
+	// <---- At this point, samples from the generator
+	// could be pushed into our pipe segment.
+	// parentDisconnect() above MUST NOT be removed
+
 	return Positive;
 }
 
@@ -92,10 +109,11 @@ void SampleSending::samplesConsume()
 
 	for (size_t i = 0; i < 4; ++i)
 	{
-		if (!ppPktSamples.get(entry))
+		if (!mppPktSamples.get(entry))
 			break;
 
 		delete entry.particle;
+		entry.particle = NULL;
 	}
 }
 
@@ -106,8 +124,8 @@ void SampleSending::processInfo(char *pBuf, char *pBufEnd)
 #endif
 	dInfo("Sample buffer\t");
 	pBuf += progressStr(pBuf, pBufEnd,
-		ppPktSamples.size(),
-		ppPktSamples.sizeMax());
+		mppPktSamples.size(),
+		mppPktSamples.sizeMax());
 	dInfo("\n");
 }
 

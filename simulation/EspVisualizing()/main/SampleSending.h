@@ -43,7 +43,7 @@ public:
 
 	// input
 
-	Pipe<std::vector<int16_t> *> ppPktSamples;
+	Pipe<std::vector<int16_t> *> mppPktSamples;
 
 protected:
 
