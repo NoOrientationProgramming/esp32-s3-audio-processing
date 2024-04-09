@@ -244,7 +244,7 @@ void SimUserInteracting::sigGenProcess()
 		mpPrgBuffOut->setValue(
 			(100 * mpGen->mppPktSamples.size()) / mpGen->mppPktSamples.sizeMax());
 
-		if (diffMs > 5000)
+		if (diffMs > 30)
 		{
 			mpGen->probeRequest(dNumSamplesProbe, &mSamplesProbe);
 			mStateSigGen = StSgProbingDoneWait;
