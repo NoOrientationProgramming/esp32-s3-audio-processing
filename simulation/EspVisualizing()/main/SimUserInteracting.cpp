@@ -268,9 +268,9 @@ void SimUserInteracting::sigGenProcess()
 
 		if (mSamplesProbe.size() < dNumSamplesProbe)
 			break;
-
+#if 0
 		procWrnLog("Probing done: %u samples at address %p", dNumSamplesProbe, mSamplesProbe.data());
-#if 1
+
 		{
 			int16_t *pSample = mSamplesProbe.data();
 
