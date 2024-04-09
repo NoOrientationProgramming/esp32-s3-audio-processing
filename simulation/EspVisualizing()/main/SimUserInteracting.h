@@ -60,6 +60,7 @@ private:
 	void sigGenProcess();
 	void processInfo(char *pBuf, char *pBufEnd);
 
+	Success chartInit();
 	void chartUpdate();
 	void seriesAdd();
 

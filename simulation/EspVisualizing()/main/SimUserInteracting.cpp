@@ -93,7 +93,7 @@ Success SimUserInteracting::animate()
 {
 	//uint32_t curTimeMs = millis();
 	//uint32_t diffMs = curTimeMs - mStartMs;
-	//Success success;
+	Success success;
 #if 0
 	dStateTrace;
 #endif
@@ -154,6 +154,10 @@ Success SimUserInteracting::animate()
 			return procErrLog(-1, "could not create chart");
 
 		seriesAdd();
+
+		success = chartInit();
+		if (success != Positive)
+			return procErrLog(-1, "could not initialize chart");
 
 		mpWindow->setWindowTitle("ESP32S3 - Simulating()");
 		mpWindow->show();
@@ -320,6 +324,24 @@ void SimUserInteracting::sigGenProcess()
 	}
 }
 
+Success SimUserInteracting::chartInit()
+{
+	mpChart->createDefaultAxes();
+
+	float periodMs = 1;
+	float tMaxMs = 2 * periodMs;
+
+	QAbstractAxis *pAxisX, *pAxisY;
+
+	pAxisX = mpChart->axes(Qt::Horizontal).first();
+	pAxisY = mpChart->axes(Qt::Vertical).first();
+
+	pAxisX->setRange(-tMaxMs, tMaxMs);
+	pAxisY->setRange(-1.2, 1.2);
+
+	return Positive;
+}
+
 void SimUserInteracting::chartUpdate()
 {
 }
@@ -339,7 +361,6 @@ void SimUserInteracting::seriesAdd()
 	pSeries->append(2, 4);
 
 	mpChart->addSeries(pSeries);
-	mpChart->createDefaultAxes();
 }
 
 void SimUserInteracting::processInfo(char *pBuf, char *pBufEnd)
