@@ -80,7 +80,9 @@ SimUserInteracting::SimUserInteracting()
 	, mpBtnSave(NULL)
 	, mpStat(NULL)
 	, mpChart(NULL)
+	, mpSeries(NULL)
 	, mSwGenCheckedOld(false)
+	, mFreqSigHzOld(0)
 	, mpGen(NULL)
 	, mpSend(NULL)
 {
@@ -153,11 +155,15 @@ Success SimUserInteracting::animate()
 		if (!mpChart)
 			return procErrLog(-1, "could not create chart");
 
-		seriesAdd();
+		success = seriesAdd();
+		if (success != Positive)
+			return procErrLog(-1, "could not add series");
 
 		success = chartInit();
 		if (success != Positive)
 			return procErrLog(-1, "could not initialize chart");
+
+		chartUpdate();
 
 		mpWindow->setWindowTitle("ESP32S3 - Simulating()");
 		mpWindow->show();
@@ -324,19 +330,33 @@ void SimUserInteracting::sigGenProcess()
 	}
 }
 
+Success SimUserInteracting::seriesAdd()
+{
+	mpSeries = new (nothrow) QLineSeries();
+	if (!mpSeries)
+		return procErrLog(-1, "could not create series");
+
+	mpSeries->append(0, 6);
+	mpSeries->append(2, 4);
+
+	mpChart->addSeries(mpSeries);
+
+	return Positive;
+}
+
 Success SimUserInteracting::chartInit()
 {
 	mpChart->createDefaultAxes();
 
 	float periodMs = 1;
-	float tMaxMs = 2 * periodMs;
+	float timeMaxMs = 2 * periodMs;
 
 	QAbstractAxis *pAxisX, *pAxisY;
 
 	pAxisX = mpChart->axes(Qt::Horizontal).first();
 	pAxisY = mpChart->axes(Qt::Vertical).first();
 
-	pAxisX->setRange(-tMaxMs, tMaxMs);
+	pAxisX->setRange(-timeMaxMs, timeMaxMs);
 	pAxisY->setRange(-1.2, 1.2);
 
 	return Positive;
@@ -344,23 +364,26 @@ Success SimUserInteracting::chartInit()
 
 void SimUserInteracting::chartUpdate()
 {
-}
+	int freqSigHz = mpSlFreq->value();
 
-void SimUserInteracting::seriesAdd()
-{
-	QLineSeries *pSeries;
-
-	pSeries = new (nothrow) QLineSeries();
-	if (!pSeries)
-	{
-		procErrLog(-1, "could not create series");
+	if (mFreqSigHzOld == freqSigHz)
 		return;
+	mFreqSigHzOld = freqSigHz;
+
+	int numPoints = 500;
+	float timeMaxMs = 2;
+	float timeDeltaMs = timeMaxMs / numPoints;
+	float freqSampHz = 1000.0 / timeDeltaMs;
+
+	float timeAbsMs;
+
+	mpSeries->clear();
+
+	for (int i = -numPoints; i < numPoints; ++i)
+	{
+		timeAbsMs = i * timeDeltaMs;
+		mpSeries->append(timeAbsMs, sin(2 * M_PI * i * freqSigHz / freqSampHz));
 	}
-
-	pSeries->append(0, 6);
-	pSeries->append(2, 4);
-
-	mpChart->addSeries(pSeries);
 }
 
 void SimUserInteracting::processInfo(char *pBuf, char *pBufEnd)

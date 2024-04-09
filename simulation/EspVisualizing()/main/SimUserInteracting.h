@@ -60,9 +60,9 @@ private:
 	void sigGenProcess();
 	void processInfo(char *pBuf, char *pBufEnd);
 
+	Success seriesAdd();
 	Success chartInit();
 	void chartUpdate();
-	void seriesAdd();
 
 	/* member variables */
 	uint32_t mStateSigGen;
@@ -76,7 +76,9 @@ private:
 	QPushButton *mpBtnSave;
 	QLabel *mpStat;
 	QChart *mpChart;
+	QLineSeries *mpSeries;
 	bool mSwGenCheckedOld;
+	int mFreqSigHzOld;
 	SampleSineGenerating *mpGen;
 	SampleSending *mpSend;
 	std::vector<int16_t> mSamplesProbe;
