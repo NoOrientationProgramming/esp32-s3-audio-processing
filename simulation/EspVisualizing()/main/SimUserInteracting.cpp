@@ -370,7 +370,7 @@ void SimUserInteracting::chartUpdate()
 		return;
 	mFreqSigHzOld = freqSigHz;
 
-	int numPoints = 500;
+	int numPoints = 200;
 	float timeMaxMs = 2;
 	float timeDeltaMs = timeMaxMs / numPoints;
 	float freqSampHz = 1000.0 / timeDeltaMs;
