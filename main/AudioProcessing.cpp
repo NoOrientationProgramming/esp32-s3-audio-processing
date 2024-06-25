@@ -165,7 +165,7 @@ Success AudioProcessing::process()
 
 		mpPool->workerCntSet(2);
 #ifdef __xtensa__
-		mpPool->driverCreateFctSet(poolDriverCreate);
+		mpPool->driverCreateSet(poolDriverCreate);
 #endif
 		mpPool->procTreeDisplaySet(false);
 		start(mpPool);
